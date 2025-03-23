@@ -4,8 +4,10 @@ export default class extends Controller {
   static targets = ['input']
 
   static values = {
+    theme:   { type: String, default: 'default' },
     tooltip: { type: Boolean, default: false },
     labels:  { type: Boolean, default: false },
+    selectedColour: String
   }
 
   initialize() {
@@ -26,6 +28,7 @@ export default class extends Controller {
     this.step 			    = 0
     this.valRange 		  = null
     this.activePointer  = null
+    this.isRange 		    = false
 
     this.values = {
 			start:	null,
@@ -33,15 +36,27 @@ export default class extends Controller {
       range:  [],
 		}
 
-    this.klasses = {
-			container:	'rs-container',
-			background: 'rs-bg',
-			selected: 	'rs-selected',
-			pointer: 	  'rs-pointer',
-			scale: 		  'rs-scale',
-			noscale:	  'rs-noscale',
-			tip: 		    'rs-tooltip'
-		}
+    this.themes = {
+      "default": {
+        container:  'rs-container',
+        background: 'rs-bg',
+        selected:   'rs-selected',
+        scale: 		  'rs-scale',
+        pointer:	  'rs-pointer',
+        tip: 		    'rs-tooltip'
+      },
+      "tailwindcss-v4": {
+        container:  'relative h-10 w-full',
+        background: 'absolute h-2 w-full bg-gray-200 rounded-lg',
+        selected:   'absolute h-2 w-full bg-indigo-600 rounded-lg',
+        scale: 		  'absolute left-0 w-full mt-2 text-xs text-gray-600',
+        pointer:	  `absolute cursor-pointer z-10 inline-block size-5 transform rounded-full border border-gray-200
+                     bg-white ring-0 shadow-sm transition-transform duration-200 ease-in-out translate-x-5`,
+        tip: 		    'bg-gray-800 text-white text-xs px-1 rounded'
+      }
+    }
+
+    this.klasses = this.themes[this.themeValue]
   }
 
   connect() {
@@ -81,9 +96,8 @@ export default class extends Controller {
   }
 
   createSlider() {
-    this.slider = this.createElement('div', this.klasses.container)
-		this.slider.innerHTML = '<div class="rs-bg"></div>'
-
+    this.slider   = this.createElement('div', this.klasses.container)
+    this.sliderBg = this.createElement('div', this.klasses.background)
 		this.selected = this.createElement('div', this.klasses.selected)
 		this.pointerL = this.createElement('div', this.klasses.pointer, ['dir', 'left'])
 		this.scale    = this.createElement('div', this.klasses.scale)
@@ -93,6 +107,7 @@ export default class extends Controller {
 			this.tipR = this.createElement('div', this.klasses.tip)
 			this.pointerL.appendChild(this.tipL)
 		}
+    this.slider.appendChild(this.sliderBg)
 		this.slider.appendChild(this.selected)
 		this.slider.appendChild(this.scale)
 		this.slider.appendChild(this.pointerL)
@@ -108,6 +123,15 @@ export default class extends Controller {
 		this.sliderLeft   = this.slider.getBoundingClientRect().left
 		this.sliderWidth  = this.slider.clientWidth
 		this.pointerWidth = this.pointerL.clientWidth
+
+    if (this.hasSelectedColourValue) {
+      this.selected.style.backgroundColor = this.selectedColourValue
+      this.selected.style.borderColor = this.selectedColourValue
+      if (this.tooltipValue) {
+        this.tipL.style.borderColor = this.selectedColourValue
+        this.tipR.style.borderColor = this.selectedColourValue
+      }
+    }
   }
 
   setInitialValues() {
