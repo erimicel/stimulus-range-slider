@@ -4,10 +4,8 @@ export default class extends Controller {
   static targets = ["input"]
 
   static values = {
-    width:   Number,
     tooltip: { type: Boolean, default: false },
     labels:  { type: Boolean, default: false },
-    scale:   { type: Boolean, default: false },
   }
 
   initialize() {
@@ -55,10 +53,6 @@ export default class extends Controller {
     this.addEvents()
   }
 
-  // disconnect() {
-  //   this.destroy()
-  // }
-
   setInput() {
     if (this.input) {
       this.inputDisplay = getComputedStyle(this.input, null).display
@@ -93,12 +87,9 @@ export default class extends Controller {
 
 		this.container.insertBefore(this.slider, this.input.nextSibling)
 
-    if (this.widthValue) this.slider.style.width = parseInt(this.widthValue) + 'px'
 		this.sliderLeft   = this.slider.getBoundingClientRect().left
 		this.sliderWidth  = this.slider.clientWidth
 		this.pointerWidth = this.pointerL.clientWidth
-
-		if (!this.scaleValue) this.slider.classList.add(this.klasses.noscale)
   }
 
   createElement(el, klass, dataAttr) {

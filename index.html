@@ -51,24 +51,45 @@
 
       <form class="space-y-4">
         <!-- Single Range Slider -->
-        <div data-controller="range-slider" data-range-slider-tooltip-value="false" data-range-slider-labels-value="true"
-          data-range-slider-scale-value="true">
+        <div data-controller="range-slider">
+          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of single range slider</label>
+
+          <input type="text" data-range-slider-target="input" value="5" min="1" max="10" step="1">
+        </div>
+
+        <!-- Single Range Slider with Labels -->
+        <div data-controller="range-slider" data-range-slider-labels-value="true">
+          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of single range slider with labels</label>
         
-          <input type="text" data-range-slider-target="input" value="5" min="1" max="12" step="1">
+          <input type="text" data-range-slider-target="input" value="5" min="1" max="10" step="1">
+        </div>
+
+        <!-- Single Range Slider with Tooltip -->
+        <div data-controller="range-slider" data-range-slider-labels-value="true" data-range-slider-tooltip-value="true">
+          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of single range slider with tooltips</label>
+        
+          <input type="text" data-range-slider-target="input" value="5" min="1" max="10" step="1">
         </div>
 
         <!-- Multi Range Slider -->
-        <div data-controller="range-slider" data-range-slider-tooltip-value="false" data-range-slider-labels-value="true"
-          data-range-slider-scale-value="true">
+        <div data-controller="range-slider">
+          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of multi point range slider</label>
         
           <input type="text" data-range-slider-target="input" value="2,5" min="1" max="12" step="1">
         </div>
 
-        <!-- Range Slider with Tooltips -->
-        <div data-controller="range-slider" data-range-slider-tooltip-value="true" data-range-slider-labels-value="true"
-          data-range-slider-scale-value="true">
+        <!-- Multi Range Slider -->
+        <div data-controller="range-slider" data-range-slider-labels-value="true">
+          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of multi point range slider with labels</label>
         
-          <input type="text" data-range-slider-target="input" value="3,7" min="1" max="12" step="1">
+          <input type="text" data-range-slider-target="input" value="2,5" min="1" max="12" step="1">
+        </div>
+
+        <!-- Multi Range Slider -->
+        <div data-controller="range-slider" data-range-slider-labels-value="true" data-range-slider-tooltip-value="true">
+          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of multi point range slider with tooltips</label>
+        
+          <input type="text" data-range-slider-target="input" value="2,5" min="1" max="12" step="1">
         </div>
       </form>
     </main>
