@@ -6,6 +6,11 @@
 [![jsdelivr](https://data.jsdelivr.com/v1/package/gh/erimicel/stimulus-range-slider/badge)](https://www.jsdelivr.com/package/gh/erimicel/stimulus-range-slider)
 [![License](https://img.shields.io/github/license/erimicel/stimulus-range-slider?style=flat-square)](LICENSE)
 
+This component currently supports Numbers, Strings and only USD Currency number format.
+Also it comes with 2 value set options;
+`[1,2,3,4,5]` < as Array
+`1..5` < as Range
+
 ## Live demo
 
 https://erimicel.github.io/stimulus-range-slider/
@@ -42,6 +47,40 @@ To use `default` theme we also need to add css;
 
 ```css
 import 'stimulus-range-slider/dist/stimulus-range-slider.css';
+```
+
+Now we can add `range-slider` component to our view;
+```html
+<!-- Multi Range Slider with Tooltips -->
+<div data-controller="range-slider"
+     data-range-slider-values-value="1..10"
+     data-range-slider-labels-value="true"
+     data-range-slider-tooltip-value="true">
+  <label class="block mb-8 text-sm font-medium text-gray-700 dark:text-white">Example of multi point range slider with tooltips</label>
+
+  <input type="text" data-range-slider-target="inputMin" value="2">
+  <input type="text" data-range-slider-target="inputMax" value="5">
+
+  <!-- To show value on different element => <span data-range-slider-target="value"></span> -->
+</div>
+
+<!-- Single Range Slider -->
+<div data-controller="range-slider"
+     data-range-slider-values-value="[1,5,10,15,20,25]">
+  <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of single range slider</label>
+
+  <input type="text" data-range-slider-target="inputMin" value="5">
+</div>
+```
+
+Other data options;
+```
+data-range-slider-values-value="[1,2,3,4,5]"
+data-range-slider-values-value='["red", "blue", "green"]'
+data-range-slider-step-value=5
+data-range-slider-width-value="50%"
+data-range-slider-selected-colour-value="#ff0000"
+data-range-slider-currency-value="USD"
 ```
 
 ## Development
