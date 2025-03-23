@@ -5,7 +5,10 @@
   "source": "./src/range_slider.js",
   "main": "./dist/stimulus-range-slider.cjs",
   "module": "./dist/stimulus-range-slider.module.js",
-  "files": ["dist/*", "src/*"],
+  "files": [
+    "dist/*",
+    "src/*"
+  ],
   "repository": {
     "url": "git+https://github.com/erimicel/stimulus-range-slider.git",
     "type": "git"
@@ -21,16 +24,23 @@
     "range",
     "slider"
   ],
-  "browserslist": ["defaults", "not IE 11"],
+  "browserslist": [
+    "defaults",
+    "not IE 11"
+  ],
   "scripts": {
     "dev": "esbuild src/range_slider.js --format=esm  --bundle --outfile=dist/stimulus-range-slider.module.js --watch",
-    "build": "npm run build-esm && npm run build-cjs",
+    "build": "npm run build-esm && npm run build-cjs && npm run build-css",
     "build-cjs": "esbuild src/range_slider.js --format=cjs --target=es2020 --minify --bundle --sourcemap=external --external:@hotwired/stimulus --outfile=dist/stimulus-range-slider.cjs",
     "build-esm": "esbuild src/range_slider.js --format=esm --target=es2020 --minify --bundle --sourcemap=external --external:@hotwired/stimulus --outfile=dist/stimulus-range-slider.module.js",
+    "build-css": "cp src/range_slider.css dist/stimulus-range-slider.css && npx postcss src/range_slider.css -o dist/stimulus-range-slider.min.css --minify",
     "prepare": "npm run build"
   },
   "devDependencies": {
-    "esbuild": "^0.25.0"
+    "cssnano": "^7.0.6",
+    "esbuild": "^0.25.0",
+    "postcss": "^8.5.3",
+    "postcss-cli": "^11.0.1"
   },
   "peerDependencies": {
     "@hotwired/stimulus": ">= 3.0.0"
