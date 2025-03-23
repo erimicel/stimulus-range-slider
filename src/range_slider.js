@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus'
 
 export default class extends Controller {
-  static targets = ['inputMin', 'inputMax']
+  static targets = ['inputMin', 'inputMax', 'value']
 
   static values = {
     theme:    { type: String,  default: 'default' },
@@ -34,8 +34,8 @@ export default class extends Controller {
     this.step 			      = 0
     this.sliderMinValue 	= 0
     this.sliderMaxValue 	= 0
-    this.inputMinValue    = null
-    this.inputMaxValue    = null
+    this.inputMinValue    = 0
+    this.inputMaxValue    = 0
     this.valRange 		    = null
     this.activePointer    = null
     this.isRange 		      = false
@@ -89,21 +89,29 @@ export default class extends Controller {
     if (this.hasInputMinTarget) {
       this.inputMin       = this.inputMinTarget
       this.inputMinValue  = Number(this.inputMin.value)
+      if (isNaN(this.inputMinValue)) { this.inputMinValue = this.inputMin.value }
 
       if (this.inputMinValue === '') return
     }
 
     if (this.hasInputMaxTarget) {
       this.inputMax       = this.inputMaxTarget
-      this.inputMaxValue  = Number(this.inputMax.value)
 
-      if (this.inputMinValue > this.inputMaxValue) return
+      if (this.inputMax.value instanceof String) {
+        this.inputMaxValue = this.inputMax.value
+      } else {
+        this.inputMaxValue = Number(this.inputMax.value)
+        
+        if (this.inputMinValue > this.inputMaxValue) return
+      }
     }
 
     this.isDisabled   = this.disabledValue
     this.isRange      = this.hasInputMaxTarget && this.hasInputMinTarget
 
     this.setRangeValues(this.valRange, this.step)
+
+    console.log(this.values.range, this.inputMinValue)
 
     this.values.start = this.isRange ? this.values.range.indexOf(this.inputMinValue) : 0
     this.values.end   = this.isRange ? this.values.range.indexOf(this.inputMaxValue) : this.values.range.indexOf(this.inputMinValue)
@@ -126,9 +134,12 @@ export default class extends Controller {
         if (this.values.range.length === 1 || typeof this.values.range[0] === 'string') {
           this.valuesAreStrings = true
         } else {
-          [this.sliderMinValue, this.sliderMaxValue] = [...this.values.range].sort((a, b) => a - b)
+          this.values.range = this.values.range.sort(function(a, b){return a - b})
 
-          this.values.range = this.parseRange(this.sliderMinValue, this.sliderMaxValue, step)
+          this.sliderMinValue = this.values.range[0]
+          this.sliderMaxValue = this.values.range[this.values.range.length - 1]
+
+          if (this.step > 1) { this.values.range = this.parseRange(this.sliderMinValue, this.sliderMaxValue, step) }
         }
       }
     } catch (error) {
@@ -173,7 +184,7 @@ export default class extends Controller {
 			this.slider.appendChild(this.pointerR)
 		}
 
-		this.container.appendChild(this.slider)
+    this.container.insertBefore(this.slider, this.inputMin.nextSibling)
 
     if (this.hasWidthValue) this.slider.style.width = this.widthValue
 
@@ -228,6 +239,7 @@ export default class extends Controller {
     if (this.isRange && this.values.start > this.values.end) {
       this.values.start = this.values.end
     }
+    console.log(this.values)
 
     if (this.isRange) {
       this.pointerL.style.left = (this.values.start * this.stepWidth - (this.pointerWidth / 2)) + 'px'
@@ -258,6 +270,14 @@ export default class extends Controller {
     } else {
       this.inputMinTarget.value = this.values.range[this.values.end]
       this.inputMinTarget.setAttribute("value", this.values.range[this.values.end])
+    }
+
+    if (this.hasValueTarget) {
+      if (this.isRange) {
+        this.valueTarget.textContent = this.values.range[this.values.start] + ' - ' + this.values.range[this.values.end]
+      } else {
+        this.valueTarget.textContent = this.values.range[this.values.end]
+      }
     }
   }
 
