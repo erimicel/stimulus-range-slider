@@ -1,12 +1,11 @@
 .rs-container {
-  font-family: Arial, Helvetica, sans-serif;
   height: 45px;
   position: relative;
 }
 .rs-container .rs-bg,
 .rs-container .rs-selected {
   background-color: rgb(229, 231, 235);
-  border: 1px solid #ededed;
+  border: 1px solid rgb(229, 231, 235);
   height: 10px;
   left: 0;
   top: 5px;

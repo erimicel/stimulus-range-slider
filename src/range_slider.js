@@ -29,6 +29,7 @@ export default class extends Controller {
     this.valRange 		  = null
     this.activePointer  = null
     this.isRange 		    = false
+    this.isDisabled 		= false
 
     this.values = {
 			start:	null,
@@ -81,6 +82,7 @@ export default class extends Controller {
     this.parsedValue  = this.parseValue(this.inputValue)
     this.values.range = this.parseRange(this.minValue, this.maxValue, this.step)
     this.isRange      = this.parsedValue.length > 1
+    this.isDisabled   = this.input.disabled
 
     this.values.start = this.isRange ? this.values.range.indexOf(this.parsedValue[0]) : 0
     this.values.end   = this.isRange ? this.values.range.indexOf(this.parsedValue[1]) : this.values.range.length - 1
@@ -123,6 +125,14 @@ export default class extends Controller {
 		this.sliderLeft   = this.slider.getBoundingClientRect().left
 		this.sliderWidth  = this.slider.clientWidth
 		this.pointerWidth = this.pointerL.clientWidth
+
+    if (this.isDisabled) {
+      this.slider.classList.add('disabled')
+
+      return
+    } else {
+      this.slider.classList.remove('disabled')
+    }
 
     if (this.hasSelectedColourValue) {
       this.selected.style.backgroundColor = this.selectedColourValue
@@ -267,17 +277,5 @@ export default class extends Controller {
 		if (dataAttr && dataAttr.length === 2) { element.setAttribute('data-' + dataAttr[0], dataAttr[1]) }
 
 		return element
-  }
-
-  get disabledValue() {
-    return this._disabledValue
-  }
-
-  set disabledValue(value) {
-    if (value) {
-      this.slider.classList.add('disabled')
-    } else {
-      this.slider.classList.remove('disabled')
-    }
   }
 }
