@@ -204,10 +204,13 @@ export default class extends Controller {
 
   updateInput() {
     if (this.isRange) {
-      this.inputTarget.value = `${this.values.range[this.values.start]},${this.values.range[this.values.end]}`
+      this.inputValue = `${this.values.range[this.values.start]},${this.values.range[this.values.end]}`
     } else {
-      this.inputTarget.value = this.values.range[this.values.end]
+      this.inputValue = this.values.range[this.values.end]
     }
+
+    this.inputTarget.value = this.inputValue
+    this.inputTarget.setAttribute("value", this.inputValue)
   }
 
   addEvents() {
