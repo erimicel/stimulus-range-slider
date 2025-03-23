@@ -1,7 +1,7 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from '@hotwired/stimulus'
 
 export default class extends Controller {
-  static targets = ["input"]
+  static targets = ['input']
 
   static values = {
     tooltip: { type: Boolean, default: false },
@@ -53,6 +53,24 @@ export default class extends Controller {
     this.addEvents()
   }
 
+  setInitialValues() {
+    this.step         = Number(this.input.step || 1)
+    this.minValue     = Number(this.input.min || 0)
+    this.maxValue     = Number(this.input.max || 0)
+    this.inputValue   = this.input.value
+
+    if (this.inputValue === '') return
+    if (this.minValue > this.maxValue) return
+    if (this.step <= 0) return
+
+    this.parsedValue  = this.parseValue(this.inputValue)
+    this.values.range = this.parseRange(this.minValue, this.maxValue, this.step)
+    this.isRange      = this.parsedValue.length > 1
+
+    this.values.start = this.isRange ? this.values.range.indexOf(this.parsedValue[0]) : 0
+    this.values.end   = this.isRange ? this.values.range.indexOf(this.parsedValue[1]) : this.values.range.length - 1
+  }
+
   setInput() {
     if (this.input) {
       this.inputDisplay = getComputedStyle(this.input, null).display
@@ -92,14 +110,6 @@ export default class extends Controller {
 		this.pointerWidth = this.pointerL.clientWidth
   }
 
-  createElement(el, klass, dataAttr) {
-    let element = document.createElement(el)
-		if (klass) { element.className = klass }
-		if (dataAttr && dataAttr.length === 2) { element.setAttribute('data-' + dataAttr[0], dataAttr[1]) }
-
-		return element
-  }
-
   setInitialValues() {
     this.step         = Number(this.input.step || 1)
     this.minValue     = Number(this.input.min || 0)
@@ -115,23 +125,7 @@ export default class extends Controller {
     this.isRange      = this.parsedValue.length > 1
 
     this.values.start = this.isRange ? this.values.range.indexOf(this.parsedValue[0]) : 0
-    this.values.end   = this.isRange ? this.values.range.indexOf(this.parsedValue[1]) : this.values.range.length - 1
-  }
-
-  parseValue(valueStr) {
-    if (!valueStr) return null
-
-    const values = valueStr.toString().split(',').map(Number)
-
-    if (values.length === 1) return [values[0]]
-
-    return [values[0], values[1]]
-  }
-
-  parseRange(min, max, step) {
-    if (!min || !max || !step) return null
- 
-    return Array.from({ length: Math.ceil((max - min + 1) / step) }, (_, i) => min + i * step)
+    this.values.end   = this.isRange ? this.values.range.indexOf(this.parsedValue[1]) : this.values.range.indexOf(this.parsedValue[0])
   }
 
   createScale() {
@@ -161,14 +155,15 @@ export default class extends Controller {
         this.tipL.innerHTML = this.values.range[this.values.start]
         this.tipR.innerHTML = this.values.range[this.values.end]
       }
-      this.selected.style.width = (this.values.end - this.values.start) * this.stepWidth + 'px'
-      this.selected.style.left = this.values.start * this.stepWidth + 'px'
     } else {
       this.pointerL.style.left = (this.values.end * this.stepWidth - (this.pointerWidth / 2)) + 'px'
       if (this.tooltipValue) {
         this.tipL.innerHTML = this.values.range[this.values.end]
       }
     }
+
+    this.selected.style.width = (this.values.end - this.values.start) * this.stepWidth + 'px'
+    this.selected.style.left = this.values.start * this.stepWidth + 'px'
 
     this.updateInput()
   }
@@ -200,7 +195,7 @@ export default class extends Controller {
   move(e) {
     if (!this.activePointer) return
 
-    let coordX = e.type === 'touchmove' ? e.touches[0].clientX : e.pageX
+    let coordX = e.pageX
     let index  = coordX - this.sliderLeft - (this.pointerWidth / 2)
 
     index = Math.round(index / this.stepWidth)
@@ -224,6 +219,30 @@ export default class extends Controller {
     this.sliderWidth = this.slider.clientWidth
     this.step = this.sliderWidth / (this.values.range.length - 1)
     this.setSliders()
+  }
+
+  parseValue(valueStr) {
+    if (!valueStr) return null
+
+    const values = valueStr.toString().split(',').map(Number)
+
+    if (values.length === 1) return [values[0]]
+
+    return [values[0], values[1]]
+  }
+
+  parseRange(min, max, step) {
+    if (!min || !max || !step) return null
+ 
+    return Array.from({ length: Math.ceil((max - min + 1) / step) }, (_, i) => min + i * step)
+  }
+
+  createElement(el, klass, dataAttr) {
+    let element = document.createElement(el)
+		if (klass) { element.className = klass }
+		if (dataAttr && dataAttr.length === 2) { element.setAttribute('data-' + dataAttr[0], dataAttr[1]) }
+
+		return element
   }
 
   get disabledValue() {
