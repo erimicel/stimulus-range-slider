@@ -61,7 +61,7 @@ export default class extends Controller {
         container:  'relative h-10 w-full',
         background: 'absolute h-2 w-full bg-gray-200 rounded-lg',
         selected:   'absolute h-2 w-full bg-indigo-600 rounded-lg',
-        scale: 		  'absolute left-0 w-full mt-2 text-xs text-gray-600',
+        scale: 		  'absolute left-0 w-full mt-2 text-xs text-gray-600 cursor-pointer',
         pointer:	  `absolute cursor-pointer z-10 inline-block size-5 transform rounded-full border border-gray-200
                      bg-white ring-0 shadow-sm transition-transform duration-200 ease-in-out translate-x-5`,
         tip: 		    'bg-gray-800 text-white text-xs px-1 rounded'
@@ -110,8 +110,6 @@ export default class extends Controller {
     this.isRange      = this.hasInputMaxTarget && this.hasInputMinTarget
 
     this.setRangeValues(this.valRange, this.step)
-
-    console.log(this.values.range, this.inputMinValue)
 
     this.values.start = this.isRange ? this.values.range.indexOf(this.inputMinValue) : 0
     this.values.end   = this.isRange ? this.values.range.indexOf(this.inputMaxValue) : this.values.range.indexOf(this.inputMinValue)
@@ -239,7 +237,6 @@ export default class extends Controller {
     if (this.isRange && this.values.start > this.values.end) {
       this.values.start = this.values.end
     }
-    console.log(this.values)
 
     if (this.isRange) {
       this.pointerL.style.left = (this.values.start * this.stepWidth - (this.pointerWidth / 2)) + 'px'
@@ -287,6 +284,11 @@ export default class extends Controller {
     this.pointerL.addEventListener('mousedown', this.drag.bind(this))
     this.pointerR?.addEventListener('mousedown', this.drag.bind(this))
     window.addEventListener('resize', this.onResize.bind(this))
+
+    const pieces = this.slider.querySelectorAll('span');
+    for (var i = 0, iLen = pieces.length; i < iLen; i++) {
+      pieces[i].addEventListener('click', this.onClickPiece.bind(this));
+    }
   }
 
   drag(e) {
@@ -318,6 +320,27 @@ export default class extends Controller {
 
   drop() {
     this.activePointer = null
+  }
+
+  onClickPiece(e) {
+    if (this.isDisabled) return;
+
+		var idx = Math.round((e.clientX - this.sliderLeft) / this.stepWidth);
+
+		if (idx > this.values.range.length - 1) idx = this.values.range.length - 1;
+		if (idx < 0) idx = 0;
+
+		if (this.isRange) {
+			if (idx - this.values.start <= this.values.end - idx) {
+				this.values.start = idx;
+			}
+			else this.values.end = idx;
+		}
+		else this.values.end = idx;
+
+		this.slider.classList.remove('sliding');
+
+		this.setSliders()
   }
 
   onResize() {
