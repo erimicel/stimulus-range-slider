@@ -8,6 +8,7 @@ export default class extends Controller {
     tooltip:  { type: Boolean, default: false },
     labels:   { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
+    vertical: { type: Boolean, default: false },
     selectedColour:   String,
     currency:         String,
     values:           String,
@@ -95,7 +96,7 @@ export default class extends Controller {
     }
 
     if (this.hasInputMaxTarget) {
-      this.inputMax       = this.inputMaxTarget
+      this.inputMax = this.inputMaxTarget
 
       if (this.inputMax.value instanceof String) {
         this.inputMaxValue = this.inputMax.value
@@ -351,7 +352,7 @@ export default class extends Controller {
   }
 
   parseRange(min, max, step) {
-    if (!min || !max || !step) return null
+    if (!max || !step) return null
 
     return Array.from({ length: Math.ceil((max - min + 1) / step) }, (_, i) => min + i * step)
   }
