@@ -1,18 +1,23 @@
 import { Controller } from '@hotwired/stimulus'
 
 export default class extends Controller {
-  static targets = ['input']
+  static targets = ['inputMin', 'inputMax']
 
   static values = {
-    theme:   { type: String, default: 'default' },
-    tooltip: { type: Boolean, default: false },
-    labels:  { type: Boolean, default: false },
-    selectedColour: String
+    theme:    { type: String,  default: 'default' },
+    tooltip:  { type: Boolean, default: false },
+    labels:   { type: Boolean, default: false },
+    disabled: { type: Boolean, default: false },
+    selectedColour:   String,
+    currency:         String,
+    values:           String,
+    step:             Number
   }
 
   initialize() {
     this.container = this.element
-    this.input     = this.inputTarget
+    this.inputMin  = null
+    this.inputMax  = null
     this.slider    = null
     this.selected  = null
     this.pointerL  = null
@@ -21,15 +26,20 @@ export default class extends Controller {
     this.tipL      = null
     this.tipR      = null
 
-    this.sliderWidth	  = 0
-		this.sliderLeft		  = 0
-		this.pointerWidth	  = 0
-    this.stepWidth		  = 0
-    this.step 			    = 0
-    this.valRange 		  = null
-    this.activePointer  = null
-    this.isRange 		    = false
-    this.isDisabled 		= false
+    this.sliderWidth	    = 0
+		this.sliderLeft		    = 0
+		this.pointerWidth	    = 0
+    this.stepWidth		    = 0
+    this.step 			      = 0
+    this.sliderMinValue 	= 0
+    this.sliderMaxValue 	= 0
+    this.inputMinValue    = null
+    this.inputMaxValue    = null
+    this.valRange 		    = null
+    this.activePointer    = null
+    this.isRange 		      = false
+    this.isDisabled 		  = false
+    this.valuesAreStrings = false
 
     this.values = {
 			start:	null,
@@ -62,7 +72,7 @@ export default class extends Controller {
 
   connect() {
     this.setInitialValues()
-    this.setInput()
+    this.setInputs()
     this.createSlider()
     this.createScale()
     this.setSliders()
@@ -70,30 +80,47 @@ export default class extends Controller {
   }
 
   setInitialValues() {
-    this.step         = Number(this.input.step || 1)
-    this.minValue     = Number(this.input.min || 0)
-    this.maxValue     = Number(this.input.max || 0)
-    this.inputValue   = this.input.value
+    this.step = Number(this.stepValue || 1)
+    this.valRange = this.valuesValue
 
-    if (this.inputValue === '') return
-    if (this.minValue > this.maxValue) return
     if (this.step <= 0) return
 
-    this.parsedValue  = this.parseValue(this.inputValue)
-    this.values.range = this.parseRange(this.minValue, this.maxValue, this.step)
-    this.isRange      = this.parsedValue.length > 1
-    this.isDisabled   = this.input.disabled
+    if (this.hasInputMinTarget) {
+      this.inputMin       = this.inputMinTarget
+      this.inputMinValue  = Number(this.inputMin.value)
 
-    this.values.start = this.isRange ? this.values.range.indexOf(this.parsedValue[0]) : 0
-    this.values.end   = this.isRange ? this.values.range.indexOf(this.parsedValue[1]) : this.values.range.length - 1
+      if (this.inputMinValue === '') return
+    }
+
+    if (this.hasInputMaxTarget) {
+      this.inputMax       = this.inputMaxTarget
+      this.inputMaxValue  = Number(this.inputMax.value)
+
+      if (this.inputMinValue > this.inputMaxValue) return
+    }
+
+    this.isDisabled   = this.disabledValue
+    this.isRange      = this.hasInputMaxTarget && this.hasInputMinTarget
+
+    this.setRangeValues(this.valRange, this.step)
+
+    this.values.start = this.isRange ? this.values.range.indexOf(this.inputMinValue) : 0
+    this.values.end   = this.isRange ? this.values.range.indexOf(this.inputMaxValue) : this.values.range.indexOf(this.inputMinValue)
+
+    console.log(this.values)
   }
 
-  setInput() {
-    if (this.input) {
-      this.inputDisplay = getComputedStyle(this.input, null).display
-      this.input.style.display = 'none'
+  setInputs() {
+    if (this.inputMin) {
+      this.inputMinDisplay = getComputedStyle(this.inputMin, null).display
+      this.inputMin.style.display = 'none'
     } else {
       console.warn('Cannot find target input element...')
+    }
+
+    if (this.inputMax) {
+      this.inputMaxDisplay = getComputedStyle(this.inputMax, null).display
+      this.inputMax.style.display = 'none'
     }
   }
 
@@ -120,7 +147,7 @@ export default class extends Controller {
 			this.slider.appendChild(this.pointerR)
 		}
 
-		this.container.insertBefore(this.slider, this.input.nextSibling)
+		this.container.appendChild(this.slider)
 
 		this.sliderLeft   = this.slider.getBoundingClientRect().left
 		this.sliderWidth  = this.slider.clientWidth
@@ -144,24 +171,6 @@ export default class extends Controller {
     }
   }
 
-  setInitialValues() {
-    this.step         = Number(this.input.step || 1)
-    this.minValue     = Number(this.input.min || 0)
-    this.maxValue     = Number(this.input.max || 0)
-    this.inputValue   = this.input.value
-
-    if (this.inputValue === '') return
-    if (this.minValue > this.maxValue) return
-    if (this.step <= 0) return
-
-    this.parsedValue  = this.parseValue(this.inputValue)
-    this.values.range = this.parseRange(this.minValue, this.maxValue, this.step)
-    this.isRange      = this.parsedValue.length > 1
-
-    this.values.start = this.isRange ? this.values.range.indexOf(this.parsedValue[0]) : 0
-    this.values.end   = this.isRange ? this.values.range.indexOf(this.parsedValue[1]) : this.values.range.indexOf(this.parsedValue[0])
-  }
-
   createScale() {
     this.stepWidth = this.sliderWidth / (this.values.range.length - 1);
     this.scale.innerHTML = ''
@@ -172,7 +181,7 @@ export default class extends Controller {
       span.appendChild(ins)
       this.scale.appendChild(span)
       span.style.width = i === this.values.range.length - 1 ? 0 : this.stepWidth + 'px'
-      ins.innerHTML = this.labelsValue ? this.values.range[i] : ''
+      ins.innerHTML = this.labelsValue ? this.formatStr(this.values.range[i]) : ''
       ins.style.marginLeft = (ins.clientWidth / 2) * -1 + 'px'
     }
   }
@@ -186,13 +195,13 @@ export default class extends Controller {
       this.pointerL.style.left = (this.values.start * this.stepWidth - (this.pointerWidth / 2)) + 'px'
       this.pointerR.style.left = (this.values.end * this.stepWidth - (this.pointerWidth / 2)) + 'px'
       if (this.tooltipValue) {
-        this.tipL.innerHTML = this.values.range[this.values.start]
-        this.tipR.innerHTML = this.values.range[this.values.end]
+        this.tipL.innerHTML = this.formatStr(this.values.range[this.values.start])
+        this.tipR.innerHTML = this.formatStr(this.values.range[this.values.end])
       }
     } else {
       this.pointerL.style.left = (this.values.end * this.stepWidth - (this.pointerWidth / 2)) + 'px'
       if (this.tooltipValue) {
-        this.tipL.innerHTML = this.values.range[this.values.end]
+        this.tipL.innerHTML = this.formatStr(this.values.range[this.values.end])
       }
     }
 
@@ -204,13 +213,14 @@ export default class extends Controller {
 
   updateInput() {
     if (this.isRange) {
-      this.inputValue = `${this.values.range[this.values.start]},${this.values.range[this.values.end]}`
+      this.inputMinTarget.value = this.values.range[this.values.start]
+      this.inputMinTarget.setAttribute("value", this.values.range[this.values.start])
+      this.inputMaxTarget.value = this.values.range[this.values.end]
+      this.inputMaxTarget.setAttribute("value", this.values.range[this.values.end])
     } else {
-      this.inputValue = this.values.range[this.values.end]
+      this.inputMinTarget.value = this.values.range[this.values.end]
+      this.inputMinTarget.setAttribute("value", this.values.range[this.values.end])
     }
-
-    this.inputTarget.value = this.inputValue
-    this.inputTarget.setAttribute("value", this.inputValue)
   }
 
   addEvents() {
@@ -258,19 +268,36 @@ export default class extends Controller {
     this.setSliders()
   }
 
-  parseValue(valueStr) {
-    if (!valueStr) return null
+  setRangeValues(valueStr, step) {
+    if (!valueStr || !step) return
 
-    const values = valueStr.toString().split(',').map(Number)
+    try {
+      if (valueStr.includes("..")) {
+        // Handle "20000..60000" -> Convert to [20000, 60000]
+        [this.sliderMinValue, this.sliderMaxValue] = valueStr.split("..").map(Number)
 
-    if (values.length === 1) return [values[0]]
+        this.values.range = this.parseRange(this.sliderMinValue, this.sliderMaxValue, step)
+      } else {
+        // Handle "[1,2,3,4,5]" -> Convert to [1,2,3,4,5]
+        // Handle "['blue', 'red', 'green']" -> Convert to ['blue', 'red', 'green']
+        this.values.range = JSON.parse(valueStr)
 
-    return [values[0], values[1]]
+        if (this.values.range.length === 1 || typeof this.values.range[0] === 'string') {
+          this.valuesAreStrings = true
+        } else {
+          [this.sliderMinValue, this.sliderMaxValue] = [...this.values.range].sort((a, b) => a - b)
+
+          this.values.range = this.parseRange(this.sliderMinValue, this.sliderMaxValue, step)
+        }
+      }
+    } catch (error) {
+      console.error("Invalid range slider values:", valueStr)
+    }
   }
 
   parseRange(min, max, step) {
     if (!min || !max || !step) return null
- 
+
     return Array.from({ length: Math.ceil((max - min + 1) / step) }, (_, i) => min + i * step)
   }
 
@@ -280,5 +307,23 @@ export default class extends Controller {
 		if (dataAttr && dataAttr.length === 2) { element.setAttribute('data-' + dataAttr[0], dataAttr[1]) }
 
 		return element
+  }
+
+  formatStr(value) {
+    if (this.valuesAreStrings) return value
+    if (this.hasCurrencyValue) return this.formatCurrency(value)
+
+    return value
+  }
+
+  formatCurrency(value) {
+    if (!this.hasCurrencyValue) return value
+
+    // TODO: add support for other currencies
+    return new Intl.NumberFormat("en-US", { 
+      style: "currency", 
+      currency: this.currencyValue, 
+      minimumFractionDigits: 0 
+    }).format(value);
   }
 }
