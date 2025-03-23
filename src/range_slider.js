@@ -11,7 +11,8 @@ export default class extends Controller {
     selectedColour:   String,
     currency:         String,
     values:           String,
-    step:             Number
+    step:             Number,
+    width:            String
   }
 
   initialize() {
@@ -106,8 +107,33 @@ export default class extends Controller {
 
     this.values.start = this.isRange ? this.values.range.indexOf(this.inputMinValue) : 0
     this.values.end   = this.isRange ? this.values.range.indexOf(this.inputMaxValue) : this.values.range.indexOf(this.inputMinValue)
+  }
 
-    console.log(this.values)
+  setRangeValues(valueStr, step) {
+    if (!valueStr || !step) return
+
+    try {
+      if (valueStr.includes("..")) {
+        // Handle "20000..60000" -> Convert to [20000, 60000]
+        [this.sliderMinValue, this.sliderMaxValue] = valueStr.split("..").map(Number)
+
+        this.values.range = this.parseRange(this.sliderMinValue, this.sliderMaxValue, step)
+      } else {
+        // Handle "[1,2,3,4,5]" -> Convert to [1,2,3,4,5]
+        // Handle "['blue', 'red', 'green']" -> Convert to ['blue', 'red', 'green']
+        this.values.range = JSON.parse(valueStr)
+
+        if (this.values.range.length === 1 || typeof this.values.range[0] === 'string') {
+          this.valuesAreStrings = true
+        } else {
+          [this.sliderMinValue, this.sliderMaxValue] = [...this.values.range].sort((a, b) => a - b)
+
+          this.values.range = this.parseRange(this.sliderMinValue, this.sliderMaxValue, step)
+        }
+      }
+    } catch (error) {
+      console.error("Invalid range slider values:", valueStr)
+    }
   }
 
   setInputs() {
@@ -149,6 +175,8 @@ export default class extends Controller {
 
 		this.container.appendChild(this.slider)
 
+    if (this.hasWidthValue) this.slider.style.width = this.widthValue
+
 		this.sliderLeft   = this.slider.getBoundingClientRect().left
 		this.sliderWidth  = this.slider.clientWidth
 		this.pointerWidth = this.pointerL.clientWidth
@@ -184,6 +212,16 @@ export default class extends Controller {
       ins.innerHTML = this.labelsValue ? this.formatStr(this.values.range[i]) : ''
       ins.style.marginLeft = (ins.clientWidth / 2) * -1 + 'px'
     }
+  }
+
+  updateScale() {
+    this.stepWidth = this.sliderWidth / (this.values.range.length - 1)
+
+		let pieces = this.slider.querySelectorAll('span')
+
+		for (var i = 0, iLen = pieces.length; i < iLen; i++) { pieces[i].style.width = this.stepWidth + 'px' }
+
+		this.setSliders()
   }
 
   setSliders() {
@@ -263,36 +301,10 @@ export default class extends Controller {
   }
 
   onResize() {
+    this.sliderLeft = this.slider.getBoundingClientRect().left
     this.sliderWidth = this.slider.clientWidth
-    this.step = this.sliderWidth / (this.values.range.length - 1)
-    this.setSliders()
-  }
 
-  setRangeValues(valueStr, step) {
-    if (!valueStr || !step) return
-
-    try {
-      if (valueStr.includes("..")) {
-        // Handle "20000..60000" -> Convert to [20000, 60000]
-        [this.sliderMinValue, this.sliderMaxValue] = valueStr.split("..").map(Number)
-
-        this.values.range = this.parseRange(this.sliderMinValue, this.sliderMaxValue, step)
-      } else {
-        // Handle "[1,2,3,4,5]" -> Convert to [1,2,3,4,5]
-        // Handle "['blue', 'red', 'green']" -> Convert to ['blue', 'red', 'green']
-        this.values.range = JSON.parse(valueStr)
-
-        if (this.values.range.length === 1 || typeof this.values.range[0] === 'string') {
-          this.valuesAreStrings = true
-        } else {
-          [this.sliderMinValue, this.sliderMaxValue] = [...this.values.range].sort((a, b) => a - b)
-
-          this.values.range = this.parseRange(this.sliderMinValue, this.sliderMaxValue, step)
-        }
-      }
-    } catch (error) {
-      console.error("Invalid range slider values:", valueStr)
-    }
+    this.updateScale()
   }
 
   parseRange(min, max, step) {
