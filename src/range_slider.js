@@ -9,6 +9,7 @@ export default class extends Controller {
     labels: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
     vertical: { type: Boolean, default: false },
+    markers: { type: Boolean, default: false },
     selectedColour: String,
     currency: String,
     values: String,
@@ -57,6 +58,7 @@ export default class extends Controller {
         scale: "rs-scale",
         pointer: "rs-pointer",
         tip: "rs-tooltip",
+        marker: "rs-marker",
       },
       "tailwindcss-v4": {
         container: "relative h-10 w-full",
@@ -67,6 +69,7 @@ export default class extends Controller {
         pointer: `absolute cursor-pointer z-10 inline-block size-5 transform rounded-full border border-gray-200
                      bg-white ring-0 shadow-sm transition-transform duration-200 ease-in-out translate-x-5`,
         tip: "bg-gray-800 text-white text-xs px-1 rounded",
+        marker: "absolute h-2 w-1 bg-gray-200",
       },
     };
 
@@ -229,6 +232,8 @@ export default class extends Controller {
       this.slider.classList.remove("disabled");
     }
 
+    if (!this.labelsValue) this.slider.classList.add("-no-labels");
+
     if (this.hasSelectedColourValue) {
       this.selected.style.backgroundColor = this.selectedColourValue;
       this.selected.style.borderColor = this.selectedColourValue;
@@ -241,19 +246,24 @@ export default class extends Controller {
 
   createScale() {
     this.stepWidth = this.sliderWidth / (this.values.range.length - 1);
-    this.scale.innerHTML = "";
 
     for (let i = 0; i < this.values.range.length; i++) {
-      const span = document.createElement("span");
-      const ins = document.createElement("ins");
-      span.appendChild(ins);
-      this.scale.appendChild(span);
-      span.style.width =
+      const labelContainer = document.createElement("div");
+      const label = document.createElement("span");
+
+      if (this.markersValue) {
+        labelContainer.classList.add(this.klasses.marker);
+        label.classList.add(this.klasses.marker);
+      }
+
+      labelContainer.appendChild(label);
+      this.scale.appendChild(labelContainer);
+      labelContainer.style.width =
         i === this.values.range.length - 1 ? 0 : this.stepWidth + "px";
-      ins.innerHTML = this.labelsValue
+      label.innerHTML = this.labelsValue
         ? this.formatStr(this.values.range[i])
         : "";
-      ins.style.marginLeft = (ins.clientWidth / 2) * -1 + "px";
+      label.style.marginLeft = (label.clientWidth / 2) * -1 + "px";
     }
   }
 
@@ -338,14 +348,24 @@ export default class extends Controller {
 
   addEvents() {
     this.slider.addEventListener("mousemove", this.move.bind(this));
-    this.slider.addEventListener("touchmove", this.move.bind(this));
+    this.slider.addEventListener("touchmove", this.move.bind(this), {
+      passive: true,
+    });
     this.slider.addEventListener("mouseup", this.drop.bind(this));
-    this.slider.addEventListener("touchend", this.drop.bind(this));
-    this.slider.addEventListener("touchcancel", this.drop.bind(this));
+    this.slider.addEventListener("touchend", this.drop.bind(this), {
+      passive: true,
+    });
+    this.slider.addEventListener("touchcancel", this.drop.bind(this), {
+      passive: true,
+    });
     this.pointerL.addEventListener("mousedown", this.drag.bind(this));
-    this.pointerL.addEventListener("touchstart", this.drag.bind(this));
+    this.pointerL.addEventListener("touchstart", this.drag.bind(this), {
+      passive: true,
+    });
     this.pointerR?.addEventListener("mousedown", this.drag.bind(this));
-    this.pointerR?.addEventListener("touchstart", this.drag.bind(this));
+    this.pointerR?.addEventListener("touchstart", this.drag.bind(this), {
+      passive: true,
+    });
     window.addEventListener("resize", this.onResize.bind(this));
 
     const pieces = this.slider.querySelectorAll("span");

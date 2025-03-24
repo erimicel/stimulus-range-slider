@@ -115,7 +115,6 @@ If you find this package helpful, please ⭐ the repository on GitHub!
 - Support vertical slider
 - Support tailwindcssv4 and boostrap5 themes
 - Support more options for tooltip (position, distance etc.)
-- Support show/hide markers
 - Support more custom UI elements (pointers, gradient etc.)
 - Add onChange custom event that can be ported to custom controller
 - Add destroy custom event

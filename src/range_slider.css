@@ -1,6 +1,9 @@
 .rs-container {
-  height: 45px;
+  height: 46px;
   position: relative;
+}
+.rs-container.-no-labels {
+  height: 26px;
 }
 .rs-container .rs-bg,
 .rs-container .rs-selected {
@@ -67,11 +70,11 @@
   top: 5px;
   white-space: nowrap;
 }
-.rs-container .rs-scale span {
+.rs-container .rs-scale div {
   float: left;
   position: relative;
 }
-.rs-container .rs-scale span::before {
+.rs-container .rs-scale div.rs-marker::before {
   background-color: #ededed;
   content: "";
   height: 8px;
@@ -80,18 +83,21 @@
   top: 10px;
   width: 1px;
 }
-.rs-container .rs-scale span:last-child {
+.rs-container .rs-scale div:last-child {
   margin-left: -1px;
   width: 0px;
 }
-.rs-container .rs-scale span ins {
+.rs-container .rs-scale div span {
   color: #333;
   display: inline-block;
   font-size: 12px;
-  margin-top: 20px;
+  margin-top: 14px;
   text-decoration: none;
 }
-.rs-container.disabled .rs-scale span ins {
+.rs-container .rs-scale div span.rs-marker {
+  margin-top: 20px;
+}
+.rs-container.disabled .rs-scale div span {
   color: #999;
 }
 .rs-tooltip {
