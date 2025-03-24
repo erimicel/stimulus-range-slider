@@ -117,6 +117,5 @@ If you find this package helpful, please ⭐ the repository on GitHub!
 - Support more options for tooltip (position, distance etc.)
 - Support show/hide markers
 - Support more custom UI elements (pointers, gradient etc.)
-- Fix Disable state
 - Add onChange custom event that can be ported to custom controller
 - Add destroy custom event
