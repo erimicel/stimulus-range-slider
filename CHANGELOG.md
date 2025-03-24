@@ -1,3 +1,7 @@
+# 1.0.3
+
+* Fix broken range pointers if initial values are empty
+
 # 1.0.2
 
 * Fix range to slide on click

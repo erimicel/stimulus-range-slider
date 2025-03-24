@@ -36,9 +36,8 @@ export default class extends Controller {
     this.step = 0;
     this.sliderMinValue = 0;
     this.sliderMaxValue = 0;
-    this.inputMinValue = 0;
-    this.inputMaxValue = 0;
-    this.valRange = null;
+    this.inputMinValue = null;
+    this.inputMaxValue = null;
     this.activePointer = null;
     this.isRange = false;
     this.isDisabled = false;
@@ -87,24 +86,28 @@ export default class extends Controller {
 
   setInitialValues() {
     this.step = Number(this.stepValue || 1);
-    this.valRange = this.valuesValue;
 
     if (this.step <= 0) return;
 
     if (this.hasInputMinTarget) {
       this.inputMin = this.inputMinTarget;
-      this.inputMinValue = Number(this.inputMin.value);
+
+      if (this.inputMin.value === "") {
+        this.inputMinValue = null;
+      } else {
+        this.inputMinValue = Number(this.inputMin.value);
+      }
       if (isNaN(this.inputMinValue)) {
         this.inputMinValue = this.inputMin.value;
       }
-
-      if (this.inputMinValue === "") return;
     }
 
     if (this.hasInputMaxTarget) {
       this.inputMax = this.inputMaxTarget;
 
-      if (this.inputMax.value instanceof String) {
+      if (this.inputMax.value === "") {
+        this.inputMaxValue = null;
+      } else if (this.inputMax.value instanceof String) {
         this.inputMaxValue = this.inputMax.value;
       } else {
         this.inputMaxValue = Number(this.inputMax.value);
@@ -116,14 +119,25 @@ export default class extends Controller {
     this.isDisabled = this.disabledValue;
     this.isRange = this.hasInputMaxTarget && this.hasInputMinTarget;
 
-    this.setRangeValues(this.valRange, this.step);
+    this.setRangeValues(this.valuesValue, this.step);
 
-    this.values.start = this.isRange
-      ? this.values.range.indexOf(this.inputMinValue)
-      : 0;
-    this.values.end = this.isRange
-      ? this.values.range.indexOf(this.inputMaxValue)
-      : this.values.range.indexOf(this.inputMinValue);
+    if (this.inputMin.value === "") {
+      this.values.start = 0;
+    } else {
+      this.values.start = this.isRange
+        ? this.values.range.indexOf(this.inputMinValue)
+        : 0;
+    }
+
+    if (this.hasInputMaxTarget && this.inputMax.value === "") {
+      this.values.end = this.values.range.length - 1;
+    } else {
+      this.values.end = this.isRange
+        ? this.values.range.indexOf(this.inputMaxValue)
+        : this.inputMin.value === ""
+        ? this.values.range.length - 1
+        : this.values.range.indexOf(this.inputMinValue);
+    }
   }
 
   setRangeValues(valueStr, step) {

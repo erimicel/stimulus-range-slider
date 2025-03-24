@@ -67,8 +67,8 @@ Now we can add `range-slider` component to our view;
   <input type="text" data-range-slider-target="inputMax" value="5" />
 
   <!-- OR erb -->
-  <%= form.text_field :range_min, data: { rangeSliderTarget: "inputMin" } %>
-  <%= form.text_field :range_max, data: { rangeSliderTarget: "inputMax" } %>
+  <%= form.text_field :range_min, data: { range_slider_target: "inputMin" } %>
+  <%= form.text_field :range_max, data: { range_slider_target: "inputMax" } %>
 
   <!-- To show value on different element => <span data-range-slider-target="value"></span> -->
 </div>
@@ -85,7 +85,7 @@ Now we can add `range-slider` component to our view;
   <input type="text" data-range-slider-target="inputMin" value="5" />
 
   <!-- OR erb -->
-  <%= form.text_field :range_min, data: { rangeSliderTarget: "inputMin" } %>
+  <%= form.text_field :range_min, data: { range_slider_target: "inputMin" } %>
 
   <!-- To show value on different element => <span data-range-slider-target="value"></span> -->
 </div>
