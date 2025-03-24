@@ -3,7 +3,6 @@
 [![GitHub](https://img.shields.io/github/v/release/erimicel/stimulus-range-slider?style=flat-square)](https://github.com/erimicel/stimulus-range-slider)
 [![npm version](https://img.shields.io/npm/v/stimulus-range-slider?style=flat-square)](https://www.npmjs.com/package/stimulus-range-slider)
 [![npm](https://img.shields.io/npm/dm/stimulus-range-slider?label=npm&style=flat-square)](https://www.npmjs.com/package/stimulus-range-slider)
-[![jsdelivr](https://data.jsdelivr.com/v1/package/gh/erimicel/stimulus-range-slider/badge)](https://www.jsdelivr.com/package/gh/erimicel/stimulus-range-slider)
 [![License](https://img.shields.io/github/license/erimicel/stimulus-range-slider?style=flat-square)](LICENSE)
 
 This component currently supports Numbers, Strings and only USD Currency number format.
@@ -34,13 +33,13 @@ First, you'll want to initialize StimulusJS and then you can import range slider
 
 ```js
 // Start StimulusJS
-import { Application } from "@hotwired/stimulus"
+import { Application } from "@hotwired/stimulus";
 
 const application = Application.start();
 
 // Import and register all TailwindCSS Components or just the ones you need
-import RangeSlider from "stimulus-range-slider"
-application.register('range-slider', RangeSlider)
+import RangeSlider from "stimulus-range-slider";
+application.register("range-slider", RangeSlider);
 ```
 
 To use `default` theme we also need to add css;
@@ -50,30 +49,40 @@ import 'stimulus-range-slider/dist/stimulus-range-slider.css';
 ```
 
 Now we can add `range-slider` component to our view;
+
 ```html
 <!-- Multi Range Slider with Tooltips -->
-<div data-controller="range-slider"
-     data-range-slider-values-value="1..10"
-     data-range-slider-labels-value="true"
-     data-range-slider-tooltip-value="true">
-  <label class="block mb-8 text-sm font-medium text-gray-700 dark:text-white">Example of multi point range slider with tooltips</label>
+<div
+  data-controller="range-slider"
+  data-range-slider-values-value="1..10"
+  data-range-slider-labels-value="true"
+  data-range-slider-tooltip-value="true"
+>
+  <label class="block mb-8 text-sm font-medium text-gray-700 dark:text-white">
+    Example of multi point range slider with tooltips
+  </label>
 
-  <input type="text" data-range-slider-target="inputMin" value="2">
-  <input type="text" data-range-slider-target="inputMax" value="5">
+  <input type="text" data-range-slider-target="inputMin" value="2" />
+  <input type="text" data-range-slider-target="inputMax" value="5" />
 
   <!-- To show value on different element => <span data-range-slider-target="value"></span> -->
 </div>
 
 <!-- Single Range Slider -->
-<div data-controller="range-slider"
-     data-range-slider-values-value="[1,5,10,15,20,25]">
-  <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of single range slider</label>
+<div
+  data-controller="range-slider"
+  data-range-slider-values-value="[1,5,10,15,20,25]"
+>
+  <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">
+    Example of single range slider
+  </label>
 
-  <input type="text" data-range-slider-target="inputMin" value="5">
+  <input type="text" data-range-slider-target="inputMin" value="5" />
 </div>
 ```
 
 Other data options;
+
 ```
 data-range-slider-values-value="[1,2,3,4,5]"
 data-range-slider-values-value='["red", "blue", "green"]'
