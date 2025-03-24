@@ -1,6 +1,6 @@
 {
   "name": "stimulus-range-slider",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A range slider controller for Stimulus",
   "source": "./src/range_slider.js",
   "main": "./dist/stimulus-range-slider.cjs",
