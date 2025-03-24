@@ -338,9 +338,14 @@ export default class extends Controller {
 
   addEvents() {
     this.slider.addEventListener("mousemove", this.move.bind(this));
+    this.slider.addEventListener("touchmove", this.move.bind(this));
     this.slider.addEventListener("mouseup", this.drop.bind(this));
+    this.slider.addEventListener("touchend", this.drop.bind(this));
+    this.slider.addEventListener("touchcancel", this.drop.bind(this));
     this.pointerL.addEventListener("mousedown", this.drag.bind(this));
+    this.pointerL.addEventListener("touchstart", this.drag.bind(this));
     this.pointerR?.addEventListener("mousedown", this.drag.bind(this));
+    this.pointerR?.addEventListener("touchstart", this.drag.bind(this));
     window.addEventListener("resize", this.onResize.bind(this));
 
     const pieces = this.slider.querySelectorAll("span");
