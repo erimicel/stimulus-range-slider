@@ -270,7 +270,7 @@ export default class extends Controller {
   updateScale() {
     this.stepWidth = this.sliderWidth / (this.values.range.length - 1);
 
-    let pieces = this.slider.querySelectorAll("span");
+    let pieces = this.slider.querySelectorAll("div");
 
     for (var i = 0, iLen = pieces.length; i < iLen; i++) {
       pieces[i].style.width = this.stepWidth + "px";
@@ -368,7 +368,7 @@ export default class extends Controller {
     });
     window.addEventListener("resize", this.onResize.bind(this));
 
-    const pieces = this.slider.querySelectorAll("span");
+    const pieces = this.slider.querySelectorAll("div");
     for (var i = 0, iLen = pieces.length; i < iLen; i++) {
       pieces[i].addEventListener("click", this.onClickPiece.bind(this));
     }
