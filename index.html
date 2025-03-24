@@ -1,19 +1,20 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="description" content="Stimulus Range Slider Component">
-    <meta name="author" content="Erim Icel">
 
-    <title>Stimulus Range Slider Component</title>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="Stimulus Range Slider Component">
+  <meta name="author" content="Erim Icel">
 
-    <link rel="stylesheet" href="./src/range_slider.css">
+  <title>Stimulus Range Slider Component</title>
 
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="./src/range_slider.css">
 
-    <script type="importmap">
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+
+  <script type="importmap">
       {
         "imports": {
           "@hotwired/stimulus": "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js",
@@ -22,215 +23,208 @@
       }
     </script>
 
-    <script type="module">
-      import { Application } from "@hotwired/stimulus";
-      import RangeSlider from "stimulus-range-slider";
+  <script type="module">
+    import { Application } from "@hotwired/stimulus";
+    import RangeSlider from "stimulus-range-slider";
 
-      (() => {
-        const application = Application.start();
-        application.register('range-slider', RangeSlider);
-      })()
-    </script>
-  </head>
+    (() => {
+      const application = Application.start();
+      application.register('range-slider', RangeSlider);
+    })()
+  </script>
+</head>
 
-  <body class="font-sans antialiased bg-gray-100 dark:bg-gray-900">
+<body class="font-sans antialiased bg-gray-100 dark:bg-gray-900">
 
-    <header class="py-4 text-white bg-blue-600 shadow-sm dark:bg-blue-950">
-      <h1 class="text-xl font-bold text-center">Stimulus Range Slider Component Demo v1.0.0</h1>
-    </header>
-  
-    <main class="max-w-4xl p-6 mx-auto mt-8 bg-white rounded-lg shadow-lg dark:bg-slate-800">
-      <div class="flex flex-row flex-wrap justify-between">
-        <h2 class="mb-6 text-2xl font-semibold text-gray-800 dark:text-white">
-          Examples of
-          <a href="https://github.com/erimicel/stimulus-range-slider" target="_blank" class="text-blue-600">
-            @erimicel/stimulus-range-slider
-          </a>
-        </h2>
+  <header class="py-4 text-white bg-blue-600 shadow-sm dark:bg-blue-950">
+    <h1 class="text-xl font-bold text-center">Stimulus Range Slider Component Demo v1.0.0</h1>
+  </header>
+
+  <main class="max-w-4xl p-6 mx-auto mt-8 bg-white rounded-lg shadow-lg dark:bg-slate-800">
+    <div class="flex flex-row flex-wrap justify-between">
+      <h2 class="mb-6 text-2xl font-semibold text-gray-800 dark:text-white">
+        Examples of
+        <a href="https://github.com/erimicel/stimulus-range-slider" target="_blank" class="text-blue-600">
+          @erimicel/stimulus-range-slider
+        </a>
+      </h2>
+    </div>
+
+    <form class="space-y-4">
+      <!-- Single Range Slider -->
+      <div data-controller="range-slider" data-range-slider-values-value="1..10">
+        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of single range
+          slider</label>
+
+        <input type="text" data-range-slider-target="inputMin" value="5">
       </div>
 
-      <form class="space-y-4">
-        <!-- Single Range Slider -->
-        <div data-controller="range-slider"
-             data-range-slider-values-value="1..10">
-          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of single range slider</label>
+      <!-- Single Range Slider with Width -->
+      <div data-controller="range-slider" data-range-slider-values-value="1..10" data-range-slider-width-value="50%">
+        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of single range slider with
+          custom width</label>
 
-          <input type="text" data-range-slider-target="inputMin" value="5">
+        <input type="text" data-range-slider-target="inputMin" value="5">
+      </div>
+
+      <!-- Single Range Slider with custom value target -->
+      <div data-controller="range-slider" data-range-slider-values-value="1..10">
+        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of single range slider with
+          custom value span</label>
+
+        <input type="text" data-range-slider-target="inputMin" value="5">
+        <span
+          class="flex items-center justify-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-red-600/10 ring-inset"
+          data-range-slider-target="value"></span>
+      </div>
+
+      <!-- Single Range Slider with Labels -->
+      <div data-controller="range-slider" data-range-slider-values-value="1..10" data-range-slider-labels-value="true">
+        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of single range slider with
+          labels</label>
+
+        <input type="text" data-range-slider-target="inputMin" value="5">
+      </div>
+
+      <!-- Single Range Slider with Labels and Step -->
+      <div data-controller="range-slider" data-range-slider-values-value="0..150" data-range-slider-labels-value="true"
+        data-range-slider-step-value="10">
+        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of single range slider with
+          labels and step of 10</label>
+
+        <input type="text" data-range-slider-target="inputMin" value="20">
+      </div>
+
+      <!-- Single Range Slider with Tooltip -->
+      <div data-controller="range-slider" data-range-slider-values-value="1..10" data-range-slider-labels-value="true"
+        data-range-slider-tooltip-value="true">
+        <label class="block mb-8 text-sm font-medium text-gray-700 dark:text-white">Example of single range slider with
+          tooltips</label>
+
+        <input type="text" data-range-slider-target="inputMin" value="5">
+      </div>
+
+      <!-- Single Range Slider Disabled -->
+      <div data-controller="range-slider" data-range-slider-values-value="1..10" data-range-slider-labels-value="true"
+        data-range-slider-tooltip-value="true">
+        <label class="block mb-8 text-sm font-medium text-gray-700 dark:text-white">Example of single range slider
+          disabled</label>
+
+        <input type="text" data-range-slider-target="inputMin" value="5">
+      </div>
+
+      <!-- Multi Range Slider -->
+      <div data-controller="range-slider" data-range-slider-values-value="1..10">
+        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of multi point range
+          slider</label>
+
+        <input type="text" data-range-slider-target="inputMin" value="2">
+        <input type="text" data-range-slider-target="inputMax" value="5">
+      </div>
+
+      <!-- Multi Range Slider with Labels -->
+      <div data-controller="range-slider" data-range-slider-values-value="1..10" data-range-slider-labels-value="true">
+        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of multi point range slider
+          with labels</label>
+
+        <input type="text" data-range-slider-target="inputMin" value="2">
+        <input type="text" data-range-slider-target="inputMax" value="5">
+      </div>
+
+      <!-- Multi Range Slider with Tooltips -->
+      <div data-controller="range-slider" data-range-slider-values-value="1..10" data-range-slider-labels-value="true"
+        data-range-slider-tooltip-value="true">
+        <label class="block mb-8 text-sm font-medium text-gray-700 dark:text-white">Example of multi point range slider
+          with tooltips</label>
+
+        <input type="text" data-range-slider-target="inputMin" value="2">
+        <input type="text" data-range-slider-target="inputMax" value="5">
+      </div>
+
+      <!-- Multi Range Slider with Tooltips Custom Colour -->
+      <div data-controller="range-slider" data-range-slider-values-value="1..10" data-range-slider-labels-value="true"
+        data-range-slider-tooltip-value="true" data-range-slider-selected-colour-value="#ff0000">
+        <label class="block mb-8 text-sm font-medium text-gray-700 dark:text-white">Example of custom colour multi point
+          range slider with tooltips</label>
+
+        <input type="text" data-range-slider-target="inputMin" value="2">
+        <input type="text" data-range-slider-target="inputMax" value="5">
+      </div>
+
+      <div data-controller="range-slider" data-range-slider-values-value="1..10" data-range-slider-labels-value="true"
+        data-range-slider-tooltip-value="true" data-range-slider-selected-colour-value="#00ff00">
+
+        <input type="text" data-range-slider-target="inputMin" value="2">
+        <input type="text" data-range-slider-target="inputMax" value="5">
+      </div>
+
+      <div data-controller="range-slider" data-range-slider-values-value="1..10" data-range-slider-labels-value="true"
+        data-range-slider-tooltip-value="true" data-range-slider-selected-colour-value="#0000ff">
+
+        <input type="text" data-range-slider-target="inputMin" value="2">
+        <input type="text" data-range-slider-target="inputMax" value="5">
+      </div>
+
+      <!-- Multi Currency Range Slider with Tooltips -->
+      <div data-controller="range-slider" data-range-slider-values-value="20000..60000"
+        data-range-slider-step-value="5000" data-range-slider-labels-value="true" data-range-slider-tooltip-value="true"
+        data-range-slider-currency-value="USD">
+        <label class="block mb-8 text-sm font-medium text-gray-700 dark:text-white">Example of currency multi point
+          range slider with
+          tooltips</label>
+
+        <input type="text" data-range-slider-target="inputMin" value="30000">
+        <input type="text" data-range-slider-target="inputMax" value="50000">
+      </div>
+
+      <!-- Array Range Slider with Tooltips -->
+      <div data-controller="range-slider" data-range-slider-values-value="[5,1,20,15,10,25,30,45,40,35,50]"
+        data-range-slider-labels-value="true" data-range-slider-tooltip-value="true">
+        <label class="block mb-8 text-sm font-medium text-gray-700 dark:text-white">Example of array data range slider
+          with
+          tooltips</label>
+
+        <input type="text" data-range-slider-target="inputMin" value="10">
+      </div>
+
+      <!-- String Range Slider with Tooltips -->
+      <div data-controller="range-slider" data-range-slider-values-value='["Red", "Blue", "Yellow"]'
+        data-range-slider-labels-value="true" data-range-slider-tooltip-value="true">
+        <label class="block mb-8 text-sm font-medium text-gray-700 dark:text-white">Example of string range slider with
+          tooltips</label>
+
+        <input type="text" data-range-slider-target="inputMin" value="Blue">
+      </div>
+
+      <!-- Volume Vertical Range Slider -->
+      <div data-controller="range-slider" data-range-slider-values-value="0..100"
+        data-range-slider-vertical-value="true">
+        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of volume vertical range
+          slider</label>
+
+        <div>
+          Volume: <span
+            class="items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-red-600/10 ring-inset"
+            data-range-slider-target="value"></span>
         </div>
+        <input type="text" data-range-slider-target="inputMin" value="70">
+      </div>
 
-        <!-- Single Range Slider with Width -->
-        <div data-controller="range-slider"
-             data-range-slider-values-value="1..10"
-             data-range-slider-width-value="50%">
-          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of single range slider with custom width</label>
-        
-          <input type="text" data-range-slider-target="inputMin" value="5">
-        </div>
+      <!-- <h2>Tailwindcss v4 Theme</h2> -->
 
-        <!-- Single Range Slider with custom value target -->
-        <div data-controller="range-slider" data-range-slider-values-value="1..10">
-          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of single range slider with custom value span</label>
-        
-          <input type="text" data-range-slider-target="inputMin" value="5">
-          <span class="flex items-center justify-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-red-600/10 ring-inset" data-range-slider-target="value"></span>
-        </div>
-
-        <!-- Single Range Slider with Labels -->
-        <div data-controller="range-slider"
-             data-range-slider-values-value="1..10"
-             data-range-slider-labels-value="true">
-          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of single range slider with labels</label>
-        
-          <input type="text" data-range-slider-target="inputMin" value="5">
-        </div>
-
-        <!-- Single Range Slider with Labels and Step -->
-        <div data-controller="range-slider" data-range-slider-values-value="0..150" data-range-slider-labels-value="true"
-             data-range-slider-step-value="10">
-          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of single range slider with
-            labels and step of 10</label>
-        
-          <input type="text" data-range-slider-target="inputMin" value="20">
-        </div>
-
-        <!-- Single Range Slider with Tooltip -->
-        <div data-controller="range-slider"
-             data-range-slider-values-value="1..10"
-             data-range-slider-labels-value="true"
-             data-range-slider-tooltip-value="true">
-          <label class="block mb-8 text-sm font-medium text-gray-700 dark:text-white">Example of single range slider with tooltips</label>
-        
-          <input type="text" data-range-slider-target="inputMin" value="5">
-        </div>
-
-        <!-- Single Range Slider Disabled -->
-        <div data-controller="range-slider"
-             data-range-slider-values-value="1..10"
-             data-range-slider-labels-value="true"
-             data-range-slider-tooltip-value="true">
-          <label class="block mb-8 text-sm font-medium text-gray-700 dark:text-white">Example of single range slider disabled</label>
-        
-          <input type="text" data-range-slider-target="inputMin" value="5">
-        </div>
-
-        <!-- Multi Range Slider -->
-        <div data-controller="range-slider"
-             data-range-slider-values-value="1..10">
-          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of multi point range slider</label>
-        
-          <input type="text" data-range-slider-target="inputMin" value="2">
-          <input type="text" data-range-slider-target="inputMax" value="5">
-        </div>
-
-        <!-- Multi Range Slider with Labels -->
-        <div data-controller="range-slider"
-             data-range-slider-values-value="1..10"
-             data-range-slider-labels-value="true">
-          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of multi point range slider with labels</label>
-        
-          <input type="text" data-range-slider-target="inputMin" value="2">
-          <input type="text" data-range-slider-target="inputMax" value="5">
-        </div>
-
-        <!-- Multi Range Slider with Tooltips -->
-        <div data-controller="range-slider"
-             data-range-slider-values-value="1..10"
-             data-range-slider-labels-value="true"
-             data-range-slider-tooltip-value="true">
-          <label class="block mb-8 text-sm font-medium text-gray-700 dark:text-white">Example of multi point range slider with tooltips</label>
-        
-          <input type="text" data-range-slider-target="inputMin" value="2">
-          <input type="text" data-range-slider-target="inputMax" value="5">
-        </div>
-
-        <!-- Multi Range Slider with Tooltips Custom Colour -->
-        <div data-controller="range-slider"
-             data-range-slider-values-value="1..10"
-             data-range-slider-labels-value="true"
-             data-range-slider-tooltip-value="true"
-             data-range-slider-selected-colour-value="#ff0000">
-          <label class="block mb-8 text-sm font-medium text-gray-700 dark:text-white">Example of custom colour multi point range slider with tooltips</label>
-        
-          <input type="text" data-range-slider-target="inputMin" value="2">
-          <input type="text" data-range-slider-target="inputMax" value="5">
-        </div>
-
-        <div data-controller="range-slider"
-             data-range-slider-values-value="1..10"
-             data-range-slider-labels-value="true"
-             data-range-slider-tooltip-value="true"
-             data-range-slider-selected-colour-value="#00ff00">
-        
-          <input type="text" data-range-slider-target="inputMin" value="2">
-          <input type="text" data-range-slider-target="inputMax" value="5">
-        </div>
-
-        <div data-controller="range-slider"
-             data-range-slider-values-value="1..10"
-             data-range-slider-labels-value="true"
-             data-range-slider-tooltip-value="true"
-             data-range-slider-selected-colour-value="#0000ff">
-        
-          <input type="text" data-range-slider-target="inputMin" value="2">
-          <input type="text" data-range-slider-target="inputMax" value="5">
-        </div>
-
-        <!-- Multi Currency Range Slider with Tooltips -->
-        <div data-controller="range-slider"
-             data-range-slider-values-value="20000..60000"
-             data-range-slider-step-value="5000"
-             data-range-slider-labels-value="true"
-             data-range-slider-tooltip-value="true"
-             data-range-slider-currency-value="USD">
-          <label class="block mb-8 text-sm font-medium text-gray-700 dark:text-white">Example of currency multi point range slider with
-            tooltips</label>
-        
-          <input type="text" data-range-slider-target="inputMin" value="30000">
-          <input type="text" data-range-slider-target="inputMax" value="50000">
-        </div>
-
-        <!-- Array Range Slider with Tooltips -->
-        <div data-controller="range-slider" data-range-slider-values-value="[5,1,20,15,10,25,30,45,40,35,50]"
-          data-range-slider-labels-value="true" data-range-slider-tooltip-value="true">
-          <label class="block mb-8 text-sm font-medium text-gray-700 dark:text-white">Example of array data range slider with
-            tooltips</label>
-        
-          <input type="text" data-range-slider-target="inputMin" value="10">
-        </div>
-
-        <!-- String Range Slider with Tooltips -->
-        <div data-controller="range-slider" data-range-slider-values-value='["Red", "Blue", "Yellow"]'
-          data-range-slider-labels-value="true" data-range-slider-tooltip-value="true">
-          <label class="block mb-8 text-sm font-medium text-gray-700 dark:text-white">Example of string range slider with tooltips</label>
-        
-          <input type="text" data-range-slider-target="inputMin" value="Blue">
-        </div>
-
-        <!-- Volume Vertical Range Slider -->
-        <div data-controller="range-slider" data-range-slider-values-value="0..100"
-             data-range-slider-vertical-value="true">
-          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of volume vertical range slider</label>
-        
-          <div>
-            Volume: <span class="items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-red-600/10 ring-inset" data-range-slider-target="value"></span>
-          </div>
-          <input type="text" data-range-slider-target="inputMin" value="70">
-        </div>
-
-        <!-- <h2>Tailwindcss v4 Theme</h2> -->
-
-        <!-- Single Range Slider -->
-        <!-- <div data-controller="range-slider" data-range-slider-theme-value="tailwindcss-v4" data-range-slider-labels-value="true">
+      <!-- Single Range Slider -->
+      <!-- <div data-controller="range-slider" data-range-slider-theme-value="tailwindcss-v4" data-range-slider-labels-value="true">
           <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Example of single range slider</label>
         
           <input type="text" data-range-slider-target="input" value="5" min="1" max="10" step="1">
         </div> -->
-      </form>
-    </main>
+    </form>
+  </main>
 
-    <footer class="my-12 text-center text-gray-600 dark:text-white">
-      <p class="text-sm">@hotwired/stimulus</p>
-    </footer>
+  <footer class="my-12 text-center text-gray-600 dark:text-white">
+    <p class="text-sm">@hotwired/stimulus</p>
+  </footer>
 
-  </body>
+</body>
+
 </html>
