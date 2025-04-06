@@ -1,3 +1,7 @@
+# 1.0.5
+
+* Fix markers showing on incorrect position when used with labels
+
 # 1.0.4
 
 * Fix responsive sliders

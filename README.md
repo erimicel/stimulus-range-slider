@@ -8,7 +8,7 @@
 This component currently supports Numbers, Strings and only USD Currency number format.
 Also it comes with 2 value set options;
 `[1,2,3,4,5]` < as Array
-`1..5` < as Range
+`-5..5` < as Range
 
 ## Live demo
 

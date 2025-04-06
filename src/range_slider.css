@@ -90,9 +90,13 @@
 .rs-container .rs-scale div span {
   color: #333;
   display: inline-block;
+  /* position: absolute; */
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 12px;
   margin-top: 14px;
   text-decoration: none;
+  white-space: nowrap;
 }
 .rs-container .rs-scale div span.rs-marker {
   margin-top: 20px;
