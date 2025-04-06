@@ -283,9 +283,7 @@ export default class extends Controller {
       if (this.labelsValue) {
         label.innerHTML = this.formatStr(this.values.range[i]);
 
-        label.style.position = "absolute";
         label.style.left = labelPosition + "px";
-        label.style.transform = "translateX(-50%)"; // This centers the label
 
         // Determine which labels to show based on available space
         const totalLabels = this.values.range.length;
