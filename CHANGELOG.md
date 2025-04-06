@@ -1,3 +1,11 @@
+# 1.0.4
+
+* Fix responsive sliders
+* Fix negative numbers
+* Fix label and pointer position on resize event
+* Fix touch event
+* Fix issue for bigger ranges that pointer never reach to end
+
 # 1.0.3
 
 * Fix broken range pointers if initial values are empty

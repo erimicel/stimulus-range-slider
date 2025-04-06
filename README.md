@@ -120,7 +120,6 @@ If you find this package helpful, please ⭐ the repository on GitHub!
 
 ## TODO
 
-- Support negative numbers
 - Support a..z range
 - Support vertical slider
 - Support tailwindcssv4 and boostrap5 themes
