@@ -120,3 +120,63 @@
   border-color: #ccc;
   color: #999;
 }
+
+/* Vertical slider styles */
+.rs-container.vertical {
+  width: 46px;
+  height: 300px; /* Default height, can be overridden */
+}
+
+.rs-container.vertical .rs-bg,
+.rs-container.vertical .rs-selected {
+  width: 10px;
+  height: 100%;
+  top: 0;
+  left: 5px;
+}
+
+.rs-container.vertical .rs-selected {
+  width: 10px;
+  height: 0;
+  top: auto;
+  bottom: 0;
+}
+
+.rs-container.vertical .rs-pointer {
+  left: 0;
+  top: -10px;
+  transform: rotate(90deg);
+}
+
+.rs-container.vertical .rs-scale {
+  top: 0;
+  left: 20px;
+  height: 100%;
+  width: auto;
+}
+
+.rs-container.vertical .rs-scale div {
+  float: none;
+  margin-bottom: 0;
+  height: auto;
+}
+
+.rs-container.vertical .rs-scale div.rs-marker::before {
+  width: 8px;
+  height: 1px;
+  top: 0;
+  left: -12px;
+}
+
+.rs-container.vertical .rs-scale div span {
+  margin-top: 0;
+  margin-left: 5px;
+  display: inline-block;
+}
+
+/* Vertical tooltip */
+.rs-container.vertical .rs-tooltip {
+  transform: translateY(-50%) translateX(5px);
+  left: 30px;
+  top: 13px;
+}

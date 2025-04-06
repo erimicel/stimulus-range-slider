@@ -121,7 +121,6 @@ If you find this package helpful, please ⭐ the repository on GitHub!
 ## TODO
 
 - Support a..z range
-- Support vertical slider
 - Support tailwindcssv4 and boostrap5 themes
 - Support more options for tooltip (position, distance etc.)
 - Support more custom UI elements (pointers, gradient etc.)

@@ -1,3 +1,7 @@
+# 1.1.0
+
+* Add vertical slider feature
+
 # 1.0.4
 
 * Fix responsive sliders
