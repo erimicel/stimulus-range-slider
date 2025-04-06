@@ -452,10 +452,8 @@ export default class extends Controller {
   parseRange(min, max, step) {
     if (!max || !step) return null;
 
-    return Array.from(
-      { length: Math.ceil((max - min + 1) / step) },
-      (_, i) => min + i * step
-    );
+    const count = Math.floor((max - min) / step) + 1;
+    return Array.from({ length: count }, (_, i) => min + i * step);
   }
 
   createElement(el, klass, dataAttr) {
