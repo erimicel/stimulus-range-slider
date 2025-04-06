@@ -431,10 +431,11 @@ export default class extends Controller {
   onClickPiece(e) {
     if (this.isDisabled) return;
 
-    var idx = Math.round((e.clientX - this.sliderLeft) / this.stepWidth);
+    let relativePosition = e.clientX - this.sliderLeft;
+    let percentage = relativePosition / this.sliderWidth;
+    let idx = Math.round(percentage * (this.values.range.length - 1));
 
-    if (idx > this.values.range.length - 1) idx = this.values.range.length - 1;
-    if (idx < 0) idx = 0;
+    idx = Math.max(0, Math.min(idx, this.values.range.length - 1));
 
     if (this.isRange) {
       if (idx - this.values.start <= this.values.end - idx) {
