@@ -403,9 +403,11 @@ export default class extends Controller {
     if (!this.activePointer) return;
 
     let coordX = e.touches ? e.touches[0].pageX : e.pageX;
-    let index = coordX - this.sliderLeft - this.pointerWidth / 2;
+    let relativePosition = coordX - this.sliderLeft;
+    let percentage = relativePosition / this.sliderWidth;
+    let index = Math.round(percentage * (this.values.range.length - 1));
 
-    index = Math.round(index / this.stepWidth);
+    // Ensure index is within valid range
     index = Math.max(0, Math.min(index, this.values.range.length - 1));
 
     if (this.isRange) {
