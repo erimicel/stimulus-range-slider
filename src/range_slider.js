@@ -261,6 +261,8 @@ export default class extends Controller {
   createScale() {
     this.stepWidth = this.sliderWidth / (this.values.range.length - 1);
 
+    this.scale.innerHTML = "";
+
     for (let i = 0; i < this.values.range.length; i++) {
       const labelContainer = document.createElement("div");
       const label = document.createElement("span");
@@ -272,15 +274,37 @@ export default class extends Controller {
 
       labelContainer.appendChild(label);
       this.scale.appendChild(labelContainer);
+
       labelContainer.style.width =
         i === this.values.range.length - 1 ? 0 : this.stepWidth + "px";
 
-      label.innerHTML = this.labelsValue
-        ? this.formatStr(this.values.range[i])
-        : "";
+      const labelPosition = i * this.stepWidth;
 
-      label.style.whiteSpace = "nowrap";
-      label.style.marginLeft = (label.clientWidth / 2) * -1 + "px";
+      if (this.labelsValue) {
+        label.innerHTML = this.formatStr(this.values.range[i]);
+
+        label.style.position = "absolute";
+        label.style.left = labelPosition + "px";
+        label.style.transform = "translateX(-50%)"; // This centers the label
+
+        // Determine which labels to show based on available space
+        const totalLabels = this.values.range.length;
+        const availableWidth = this.sliderWidth;
+        const approxLabelWidth = 50; // Estimate of average label width in pixels
+        const maxLabelsToShow = Math.floor(availableWidth / approxLabelWidth);
+
+        // Show all labels if there's enough space, otherwise show a subset
+        if (
+          totalLabels <= maxLabelsToShow ||
+          i === 0 ||
+          i === totalLabels - 1 ||
+          i % Math.ceil(totalLabels / maxLabelsToShow) === 0
+        ) {
+          label.style.display = "inline-block";
+        } else {
+          label.style.display = "none";
+        }
+      }
     }
   }
 
@@ -301,11 +325,21 @@ export default class extends Controller {
       this.values.start = this.values.end;
     }
 
+    const maxPosition = (this.values.range.length - 1) * this.stepWidth;
+
     if (this.isRange) {
-      this.pointerL.style.left =
-        this.values.start * this.stepWidth - this.pointerWidth / 2 + "px";
-      this.pointerR.style.left =
-        this.values.end * this.stepWidth - this.pointerWidth / 2 + "px";
+      // Calculate pointer positions based on values
+      let leftPosition = this.values.start * this.stepWidth;
+      let rightPosition = this.values.end * this.stepWidth;
+
+      // Adjust to ensure pointers don't go out of bounds
+      leftPosition = Math.max(0, Math.min(leftPosition, maxPosition));
+      rightPosition = Math.max(0, Math.min(rightPosition, maxPosition));
+
+      // Set pointer positions
+      this.pointerL.style.left = leftPosition - this.pointerWidth / 2 + "px";
+      this.pointerR.style.left = rightPosition - this.pointerWidth / 2 + "px";
+
       if (this.tooltipValue) {
         this.tipL.innerHTML = this.formatStr(
           this.values.range[this.values.start]
@@ -314,19 +348,25 @@ export default class extends Controller {
           this.values.range[this.values.end]
         );
       }
+
+      // Set selected area position and width
+      this.selected.style.left = leftPosition + "px";
+      this.selected.style.width = rightPosition - leftPosition + "px";
     } else {
-      this.pointerL.style.left =
-        this.values.end * this.stepWidth - this.pointerWidth / 2 + "px";
+      let position = this.values.end * this.stepWidth;
+      position = Math.max(0, Math.min(position, maxPosition));
+
+      this.pointerL.style.left = position - this.pointerWidth / 2 + "px";
+
       if (this.tooltipValue) {
         this.tipL.innerHTML = this.formatStr(
           this.values.range[this.values.end]
         );
       }
-    }
 
-    this.selected.style.width =
-      (this.values.end - this.values.start) * this.stepWidth + "px";
-    this.selected.style.left = this.values.start * this.stepWidth + "px";
+      this.selected.style.width = position + "px";
+      this.selected.style.left = "0px";
+    }
 
     this.updateInput();
   }
@@ -403,18 +443,23 @@ export default class extends Controller {
     if (!this.activePointer) return;
 
     let coordX = e.touches ? e.touches[0].pageX : e.pageX;
-    let relativePosition = coordX - this.sliderLeft;
-    let percentage = relativePosition / this.sliderWidth;
+    // Calculate position relative to slider
+    let position = coordX - this.sliderLeft;
+
+    // Convert to percentage of slider width
+    let percentage = position / this.sliderWidth;
+
+    // Clamp percentage between 0 and 1
+    percentage = Math.max(0, Math.min(1, percentage));
+
+    // Convert to index in range values array
     let index = Math.round(percentage * (this.values.range.length - 1));
 
-    // Ensure index is within valid range
-    index = Math.max(0, Math.min(index, this.values.range.length - 1));
-
+    // Update values based on which pointer is active
     if (this.isRange) {
       if (this.activePointer === this.pointerL) {
-        this.values.start = Math.min(index, this.values.end);;
-      }
-      if (this.activePointer === this.pointerR) {
+        this.values.start = Math.min(index, this.values.end);
+      } else if (this.activePointer === this.pointerR) {
         this.values.end = Math.max(index, this.values.start);
       }
     } else {
@@ -449,10 +494,27 @@ export default class extends Controller {
   }
 
   onResize() {
+    // Save current values before resizing
+    const currentStart = this.values.start;
+    const currentEnd = this.values.end;
+
+    // Update dimensions
     this.sliderLeft = this.slider.getBoundingClientRect().left;
     this.sliderWidth = this.slider.clientWidth;
+    this.pointerWidth = this.pointerL.clientWidth;
 
-    this.updateScale();
+    // Update step width
+    this.stepWidth = this.sliderWidth / (this.values.range.length - 1);
+
+    // Recreate the scale with new dimensions
+    this.createScale();
+
+    // Restore values
+    this.values.start = currentStart;
+    this.values.end = currentEnd;
+
+    // Update visual representation
+    this.setSliders();
   }
 
   parseRange(min, max, step) {
