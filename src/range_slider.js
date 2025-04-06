@@ -274,9 +274,12 @@ export default class extends Controller {
       this.scale.appendChild(labelContainer);
       labelContainer.style.width =
         i === this.values.range.length - 1 ? 0 : this.stepWidth + "px";
+
       label.innerHTML = this.labelsValue
         ? this.formatStr(this.values.range[i])
         : "";
+
+      label.style.whiteSpace = "nowrap";
       label.style.marginLeft = (label.clientWidth / 2) * -1 + "px";
     }
   }
@@ -399,7 +402,7 @@ export default class extends Controller {
   move(e) {
     if (!this.activePointer) return;
 
-    let coordX = e.pageX;
+    let coordX = e.touches ? e.touches[0].pageX : e.pageX;
     let index = coordX - this.sliderLeft - this.pointerWidth / 2;
 
     index = Math.round(index / this.stepWidth);
@@ -407,10 +410,10 @@ export default class extends Controller {
 
     if (this.isRange) {
       if (this.activePointer === this.pointerL) {
-        this.values.start = index;
+        this.values.start = Math.min(index, this.values.end);;
       }
       if (this.activePointer === this.pointerR) {
-        this.values.end = index;
+        this.values.end = Math.max(index, this.values.start);
       }
     } else {
       this.values.end = index;
