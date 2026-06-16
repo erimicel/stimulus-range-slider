@@ -287,11 +287,22 @@ export default class extends Controller {
 
       const labelPosition = i * this.stepWidth;
 
+      // With markers the label <span> is taken out of flow, which collapses the
+      // floated containers to the left edge and stacks every marker tick at 0.
+      // Anchor each container at its step so the tick (drawn at the container's
+      // left edge) lands on the right value.
+      if (this.markersValue) {
+        labelContainer.style.position = "absolute";
+        labelContainer.style.left = labelPosition + "px";
+      }
+
       if (this.labelsValue) {
         label.innerHTML = this.formatStr(this.values.range[i]);
 
         label.style.position = "absolute";
-        label.style.left = labelPosition + "px";
+        // When markers anchor the container at labelPosition, center within it
+        // (left: 0); otherwise the collapsed container sits at 0 so offset here.
+        label.style.left = (this.markersValue ? 0 : labelPosition) + "px";
         label.style.transform = "translateX(-50%)"; // This centers the label
 
         // Determine which labels to show based on available space
