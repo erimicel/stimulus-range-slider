@@ -1,3 +1,10 @@
+# 1.1.0
+
+* Add vertical slider support (`vertical` value)
+* Fix marker positions when labels are also shown
+* Fix non-numeric (string) max values not resolving
+* Guard against a missing `inputMin` target
+
 # 1.0.4
 
 * Fix responsive sliders
