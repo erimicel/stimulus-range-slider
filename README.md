@@ -100,7 +100,12 @@ data-range-slider-step-value=5
 data-range-slider-width-value="50%"
 data-range-slider-selected-colour-value="#ff0000"
 data-range-slider-currency-value="USD"
+data-range-slider-vertical-value="true"
 ```
+
+A vertical slider runs bottom (min) to top (max). For vertical sliders the
+`width-value` sets the slider's length (its height), e.g.
+`data-range-slider-width-value="200px"`.
 
 ## Development
 
@@ -121,7 +126,6 @@ If you find this package helpful, please ⭐ the repository on GitHub!
 ## TODO
 
 - Support a..z range
-- Support vertical slider
 - Support tailwindcssv4 and boostrap5 themes
 - Support more options for tooltip (position, distance etc.)
 - Support more custom UI elements (pointers, gradient etc.)

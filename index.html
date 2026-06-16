@@ -232,18 +232,36 @@
         <input type="text" data-range-slider-target="inputMin" value="Blue">
       </div>
 
-      <!-- Volume Vertical Range Slider -->
-      <div data-controller="range-slider" data-range-slider-values-value="0..100"
-        data-range-slider-vertical-value="true" data-range-slider-markers-value="true">
-        <label class="block mb-2 text-sm font-medium text-gray-700 ">Example of volume vertical range
-          slider</label>
+      <!-- Vertical Sliders -->
+      <div>
+        <label class="block mb-2 text-sm font-medium text-gray-700">Examples of vertical sliders</label>
 
-        <div>
-          Volume: <span
-            class="items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-red-600/10 ring-inset"
-            data-range-slider-target="value"></span>
+        <div class="flex flex-row items-end gap-12 pt-2">
+          <!-- Volume (markers + value target) -->
+          <div data-controller="range-slider" data-range-slider-values-value="0..100"
+            data-range-slider-vertical-value="true" data-range-slider-markers-value="true">
+            <input type="text" data-range-slider-target="inputMin" value="70">
+            <div class="mt-3 text-xs text-gray-600">Volume: <span
+                class="rounded-md bg-red-50 px-2 py-1 font-medium text-red-700 ring-1 ring-red-600/10 ring-inset"
+                data-range-slider-target="value"></span></div>
+          </div>
+
+          <!-- Vertical with labels -->
+          <div data-controller="range-slider" data-range-slider-values-value="1..10"
+            data-range-slider-vertical-value="true" data-range-slider-labels-value="true"
+            data-range-slider-width-value="200px">
+            <input type="text" data-range-slider-target="inputMin" value="6">
+          </div>
+
+          <!-- Vertical range with labels and markers -->
+          <div data-controller="range-slider" data-range-slider-values-value="0..50"
+            data-range-slider-vertical-value="true" data-range-slider-labels-value="true"
+            data-range-slider-markers-value="true" data-range-slider-step-value="5"
+            data-range-slider-width-value="200px">
+            <input type="text" data-range-slider-target="inputMin" value="10">
+            <input type="text" data-range-slider-target="inputMax" value="35">
+          </div>
         </div>
-        <input type="text" data-range-slider-target="inputMin" value="70">
       </div>
 
       <!-- <h2>Tailwindcss v4 Theme</h2> -->
