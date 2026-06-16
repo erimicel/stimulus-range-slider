@@ -30,9 +30,16 @@ export default class extends Controller {
     this.tipR = null;
 
     this.sliderWidth = 0;
+    this.sliderHeight = 0;
     this.sliderLeft = 0;
+    this.sliderTop = 0;
+    this.sliderSize = 0;
+    this.sliderOffset = 0;
     this.pointerWidth = 0;
+    this.pointerHeight = 0;
+    this.pointerSize = 0;
     this.stepWidth = 0;
+    this.isVertical = false;
     this.step = 0;
     this.sliderMinValue = 0;
     this.sliderMaxValue = 0;
@@ -80,6 +87,8 @@ export default class extends Controller {
       console.warn("Cannot find target input element...");
       return;
     }
+
+    this.isVertical = this.verticalValue;
 
     this.setInitialValues();
     this.setInputs();
@@ -237,13 +246,17 @@ export default class extends Controller {
       this.slider.appendChild(this.pointerR);
     }
 
+    if (this.isVertical) this.slider.classList.add("-vertical");
+
     this.container.insertBefore(this.slider, this.inputMin.nextSibling);
 
-    if (this.hasWidthValue) this.slider.style.width = this.widthValue;
+    // The width value sets the slider's length: width when horizontal, height
+    // when vertical.
+    if (this.hasWidthValue) {
+      this.slider.style[this.isVertical ? "height" : "width"] = this.widthValue;
+    }
 
-    this.sliderLeft = this.slider.getBoundingClientRect().left;
-    this.sliderWidth = this.slider.clientWidth;
-    this.pointerWidth = this.pointerL.clientWidth;
+    this.measureSlider();
 
     if (this.isDisabled) {
       this.slider.classList.add("disabled");
@@ -266,7 +279,7 @@ export default class extends Controller {
   }
 
   createScale() {
-    this.stepWidth = this.sliderWidth / (this.values.range.length - 1);
+    this.stepWidth = this.sliderSize / (this.values.range.length - 1);
 
     this.scale.innerHTML = "";
 
@@ -282,33 +295,48 @@ export default class extends Controller {
       labelContainer.appendChild(label);
       this.scale.appendChild(labelContainer);
 
-      labelContainer.style.width =
-        i === this.values.range.length - 1 ? 0 : this.stepWidth + "px";
-
+      // Offset of this step from the min end of the track.
       const labelPosition = i * this.stepWidth;
 
-      // With markers the label <span> is taken out of flow, which collapses the
-      // floated containers to the left edge and stacks every marker tick at 0.
-      // Anchor each container at its step so the tick (drawn at the container's
-      // left edge) lands on the right value.
-      if (this.markersValue) {
+      if (this.isVertical) {
+        // Vertical sliders run bottom (min) -> top (max); anchor each container
+        // at its step so the marker tick and label line up with the value.
         labelContainer.style.position = "absolute";
-        labelContainer.style.left = labelPosition + "px";
+        labelContainer.style.left = "0px";
+        labelContainer.style.top = this.sliderSize - labelPosition + "px";
+      } else {
+        labelContainer.style.width =
+          i === this.values.range.length - 1 ? 0 : this.stepWidth + "px";
+
+        // With markers the label <span> is taken out of flow, which collapses
+        // the floated containers to the left edge and stacks every marker tick
+        // at 0. Anchor each container at its step so the tick (drawn at the
+        // container's left edge) lands on the right value.
+        if (this.markersValue) {
+          labelContainer.style.position = "absolute";
+          labelContainer.style.left = labelPosition + "px";
+        }
       }
 
       if (this.labelsValue) {
         label.innerHTML = this.formatStr(this.values.range[i]);
 
         label.style.position = "absolute";
-        // When markers anchor the container at labelPosition, center within it
-        // (left: 0); otherwise the collapsed container sits at 0 so offset here.
-        label.style.left = (this.markersValue ? 0 : labelPosition) + "px";
-        label.style.transform = "translateX(-50%)"; // This centers the label
+
+        if (this.isVertical) {
+          label.style.top = "0px";
+          label.style.transform = "translateY(-50%)"; // center on the step
+        } else {
+          // When markers anchor the container at labelPosition, center within
+          // it (left: 0); otherwise the collapsed container sits at 0.
+          label.style.left = (this.markersValue ? 0 : labelPosition) + "px";
+          label.style.transform = "translateX(-50%)"; // This centers the label
+        }
 
         // Determine which labels to show based on available space
         const totalLabels = this.values.range.length;
-        const availableWidth = this.sliderWidth;
-        const approxLabelWidth = 50; // Estimate of average label width in pixels
+        const availableWidth = this.sliderSize;
+        const approxLabelWidth = this.isVertical ? 18 : 50; // avg label size (px)
         const maxLabelsToShow = Math.floor(availableWidth / approxLabelWidth);
 
         // Show all labels if there's enough space, otherwise show a subset
@@ -326,37 +354,20 @@ export default class extends Controller {
     }
   }
 
-  updateScale() {
-    this.stepWidth = this.sliderWidth / (this.values.range.length - 1);
-
-    let pieces = this.slider.querySelectorAll("div");
-
-    for (var i = 0, iLen = pieces.length; i < iLen; i++) {
-      pieces[i].style.width = this.stepWidth + "px";
-    }
-
-    this.setSliders();
-  }
-
   setSliders() {
     if (this.isRange && this.values.start > this.values.end) {
       this.values.start = this.values.end;
     }
 
-    const maxPosition = (this.values.range.length - 1) * this.stepWidth;
+    const maxOffset = (this.values.range.length - 1) * this.stepWidth;
+    const clamp = (offset) => Math.max(0, Math.min(offset, maxOffset));
 
     if (this.isRange) {
-      // Calculate pointer positions based on values
-      let leftPosition = this.values.start * this.stepWidth;
-      let rightPosition = this.values.end * this.stepWidth;
+      const startOffset = clamp(this.values.start * this.stepWidth);
+      const endOffset = clamp(this.values.end * this.stepWidth);
 
-      // Adjust to ensure pointers don't go out of bounds
-      leftPosition = Math.max(0, Math.min(leftPosition, maxPosition));
-      rightPosition = Math.max(0, Math.min(rightPosition, maxPosition));
-
-      // Set pointer positions
-      this.pointerL.style.left = leftPosition - this.pointerWidth / 2 + "px";
-      this.pointerR.style.left = rightPosition - this.pointerWidth / 2 + "px";
+      this.placePointer(this.pointerL, startOffset);
+      this.placePointer(this.pointerR, endOffset);
 
       if (this.tooltipValue) {
         this.tipL.innerHTML = this.formatStr(
@@ -367,14 +378,11 @@ export default class extends Controller {
         );
       }
 
-      // Set selected area position and width
-      this.selected.style.left = leftPosition + "px";
-      this.selected.style.width = rightPosition - leftPosition + "px";
+      this.placeSelected(startOffset, endOffset);
     } else {
-      let position = this.values.end * this.stepWidth;
-      position = Math.max(0, Math.min(position, maxPosition));
+      const endOffset = clamp(this.values.end * this.stepWidth);
 
-      this.pointerL.style.left = position - this.pointerWidth / 2 + "px";
+      this.placePointer(this.pointerL, endOffset);
 
       if (this.tooltipValue) {
         this.tipL.innerHTML = this.formatStr(
@@ -382,8 +390,7 @@ export default class extends Controller {
         );
       }
 
-      this.selected.style.width = position + "px";
-      this.selected.style.left = "0px";
+      this.placeSelected(0, endOffset);
     }
 
     this.updateInput();
@@ -453,6 +460,7 @@ export default class extends Controller {
     e.preventDefault();
     if (this.disabledValue) return;
 
+    this.measureSlider(); // refresh offsets in case the page scrolled/resized
     this.activePointer = e.target;
     this.slider.classList.add("sliding");
   }
@@ -460,12 +468,12 @@ export default class extends Controller {
   move(e) {
     if (!this.activePointer) return;
 
-    let coordX = e.touches ? e.touches[0].pageX : e.pageX;
-    // Calculate position relative to slider
-    let position = coordX - this.sliderLeft;
+    const point = e.touches ? e.touches[0] : e;
+    const coord = this.isVertical ? point.clientY : point.clientX;
 
-    // Convert to percentage of slider width
-    let percentage = position / this.sliderWidth;
+    // Position along the active axis as a 0..1 fraction of the track.
+    let percentage = (coord - this.sliderOffset) / this.sliderSize;
+    if (this.isVertical) percentage = 1 - percentage; // bottom = min, top = max
 
     // Clamp percentage between 0 and 1
     percentage = Math.max(0, Math.min(1, percentage));
@@ -494,10 +502,13 @@ export default class extends Controller {
   onClickPiece(e) {
     if (this.isDisabled) return;
 
-    let relativePosition = e.clientX - this.sliderLeft;
-    let percentage = relativePosition / this.sliderWidth;
-    let idx = Math.round(percentage * (this.values.range.length - 1));
+    this.measureSlider(); // refresh offsets in case the page scrolled/resized
 
+    const coord = this.isVertical ? e.clientY : e.clientX;
+    let percentage = (coord - this.sliderOffset) / this.sliderSize;
+    if (this.isVertical) percentage = 1 - percentage;
+
+    let idx = Math.round(percentage * (this.values.range.length - 1));
     idx = Math.max(0, Math.min(idx, this.values.range.length - 1));
 
     if (this.isRange) {
@@ -516,15 +527,8 @@ export default class extends Controller {
     const currentStart = this.values.start;
     const currentEnd = this.values.end;
 
-    // Update dimensions
-    this.sliderLeft = this.slider.getBoundingClientRect().left;
-    this.sliderWidth = this.slider.clientWidth;
-    this.pointerWidth = this.pointerL.clientWidth;
-
-    // Update step width
-    this.stepWidth = this.sliderWidth / (this.values.range.length - 1);
-
-    // Recreate the scale with new dimensions
+    // Re-measure, then rebuild the scale (createScale recomputes stepWidth).
+    this.measureSlider();
     this.createScale();
 
     // Restore values
@@ -533,6 +537,40 @@ export default class extends Controller {
 
     // Update visual representation
     this.setSliders();
+  }
+
+  measureSlider() {
+    const rect = this.slider.getBoundingClientRect();
+    this.sliderLeft = rect.left;
+    this.sliderTop = rect.top;
+    this.sliderWidth = this.slider.clientWidth;
+    this.sliderHeight = this.slider.clientHeight;
+    this.pointerWidth = this.pointerL.clientWidth;
+    this.pointerHeight = this.pointerL.clientHeight;
+
+    // Active-axis shorthands (vertical measures top -> bottom).
+    this.sliderSize = this.isVertical ? this.sliderHeight : this.sliderWidth;
+    this.sliderOffset = this.isVertical ? this.sliderTop : this.sliderLeft;
+    this.pointerSize = this.isVertical ? this.pointerHeight : this.pointerWidth;
+  }
+
+  // Place a pointer centered on an offset measured from the min end of the track.
+  placePointer(pointer, offset) {
+    const pos =
+      (this.isVertical ? this.sliderSize - offset : offset) -
+      this.pointerSize / 2;
+    pointer.style[this.isVertical ? "top" : "left"] = pos + "px";
+  }
+
+  // Draw the selected band between two offsets measured from the min end.
+  placeSelected(startOffset, endOffset) {
+    if (this.isVertical) {
+      this.selected.style.top = this.sliderSize - endOffset + "px";
+      this.selected.style.height = endOffset - startOffset + "px";
+    } else {
+      this.selected.style.left = startOffset + "px";
+      this.selected.style.width = endOffset - startOffset + "px";
+    }
   }
 
   parseRange(min, max, step) {
