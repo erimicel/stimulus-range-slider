@@ -2,7 +2,7 @@
 *.log
 .DS_Store
 .gitignore
-.yarn.lock
+yarn.lock
 .prettierrc.json
 /.git
 /.vscode

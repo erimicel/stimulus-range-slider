@@ -76,6 +76,11 @@ export default class extends Controller {
   }
 
   connect() {
+    if (!this.hasInputMinTarget) {
+      console.warn("Cannot find target input element...");
+      return;
+    }
+
     this.setInitialValues();
     this.setInputs();
     this.createSlider();
@@ -107,12 +112,14 @@ export default class extends Controller {
 
       if (this.inputMax.value === "") {
         this.inputMaxValue = null;
-      } else if (this.inputMax.value instanceof String) {
-        this.inputMaxValue = this.inputMax.value;
       } else {
         this.inputMaxValue = Number(this.inputMax.value);
 
-        if (this.inputMinValue > this.inputMaxValue) return;
+        if (isNaN(this.inputMaxValue)) {
+          this.inputMaxValue = this.inputMax.value;
+        } else if (this.inputMinValue > this.inputMaxValue) {
+          return;
+        }
       }
     }
 
