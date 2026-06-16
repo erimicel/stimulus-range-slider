@@ -18,4 +18,5 @@ jobs:
         with:
           node-version: "lts/*"
       - run: npm install
-      # - run: npm run test
+      - run: npm run build
+      - run: npm audit --audit-level=high
