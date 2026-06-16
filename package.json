@@ -37,9 +37,9 @@
     "prepare": "npm run build"
   },
   "devDependencies": {
-    "cssnano": "^7.0.6",
-    "esbuild": "^0.25.0",
-    "postcss": "^8.5.3",
+    "cssnano": "^8.0.2",
+    "esbuild": "^0.28.1",
+    "postcss": "^8.5.15",
     "postcss-cli": "^11.0.1"
   },
   "peerDependencies": {
